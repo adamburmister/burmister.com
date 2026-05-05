@@ -4,14 +4,14 @@ import {
   runCommand,
   sleep,
 } from "./ShellEmulator";
+import { defineTerminalModule } from "./terminalModule";
 
 const ANSI_LINE_DELAY_MS = 45;
 const WELCOME_ANSI_URL = "/assets/ansi/welcome.ans";
 const MENU_ANSI_URL = "/assets/ansi/menu.ans";
 const ABOUT_ANSI_URL = "/assets/ansi/about.ans";
 const DOORS_ANSI_URL = "/assets/ansi/doors.ans";
-const RESUME_PDF_URL =
-  "/assets/Adam Burmister - Full Stack Engineer - Resume.pdf";
+const RESUME_PDF_URL = "/cv.pdf";
 const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
 const GUESTBOOK_API_URL = "/api/guestbook";
 const MAX_GUESTBOOK_MESSAGE_LENGTH = 160;
@@ -105,6 +105,26 @@ export async function dialerCommand(ctx: CommandContext): Promise<void> {
   }
 }
 
+export const terminalModule = defineTerminalModule({
+  commands: [
+    {
+      names: ["dialer", "./dialer"],
+      handler: dialerCommand,
+      parent: "bin",
+      helpName: "dialer",
+      description: "Dial the Burmister BBS",
+      helpAliases: ["dialer", "./dialer"],
+      helpOrder: 30,
+    },
+  ],
+  files: [
+    {
+      path: "bin/dialer",
+      statPath: "src/terminal/dialer.ts",
+    },
+  ],
+});
+
 async function runDialupSequence(ctx: CommandContext): Promise<void> {
   ctx.terminal.writeln("");
   ctx.terminal.writeln("Burmister BBS Dialer v1.0");
@@ -158,13 +178,13 @@ async function runBbsSession(ctx: CommandContext): Promise<void> {
       case "d":
         await showDoorGames(ctx);
         break;
-      case "b":
+      case "x":
         connected = false;
         break;
       default:
         ctx.terminal.writeln("");
         ctx.terminal.writeln(
-          "Unknown command. Please choose A, G, C, D, or B.",
+          "Unknown command. Please choose A, G, C, D, or X to log off.",
         );
         await sleep(900);
         break;
@@ -278,7 +298,7 @@ async function downloadResume(ctx: CommandContext): Promise<void> {
   ctx.terminal.writeln("\x1b[38;5;226mZMODEM SEND\x1b[0m");
   ctx.terminal.writeln("------------");
   ctx.terminal.writeln("");
-  ctx.terminal.writeln(`Sending ${RESUME_PDF_FILENAME}`);
+  ctx.terminal.writeln(`Sending "${RESUME_PDF_FILENAME}"...`);
   ctx.terminal.writeln("");
 
   for (let progress = 0; progress <= 100; progress += 10) {
@@ -312,7 +332,7 @@ async function showDoorGames(ctx: CommandContext): Promise<void> {
       .trim()
       .toLowerCase();
 
-    if (selection === "0" || selection === "b") {
+    if (selection === "0" || selection === "x") {
       inDoorMenu = false;
       continue;
     }

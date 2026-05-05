@@ -10,9 +10,8 @@ polished web products, TypeScript, React, Node.js, and cloud infrastructure.
 ## Key Links
 
 - Website: https://burmister.com
-- Resume: https://burmister.com/assets/Adam%20Burmister%20-%20Full%20Stack%20Engineer%20-%20Resume.pdf
-- Projects: https://burmister.com/projects
-- Colophon: https://burmister.com/colophon
+- Resume: https://burmister.com/cv.pdf
+- Colophon: https://burmister.com/colophon.txt
 
 ## Machine-Readable Summary
 

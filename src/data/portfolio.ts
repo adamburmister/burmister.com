@@ -1,3 +1,5 @@
+// TODO: Delete this file
+
 export interface SocialLink {
   label: string;
   url: string;

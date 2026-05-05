@@ -5,6 +5,7 @@
 
 import type { CommandContext, KeyHandler } from "./ShellEmulator";
 import { sleep } from "./ShellEmulator";
+import { defineTerminalModule } from "./terminalModule";
 
 /**
  * ASCII characters ordered by brightness (darkest to brightest)
@@ -287,3 +288,22 @@ export async function donutCommand(ctx: CommandContext): Promise<void> {
   ctx.terminal.writeln("Donut animation ended.");
   ctx.terminal.writeln("");
 }
+
+export const terminalModule = defineTerminalModule({
+  commands: [
+    {
+      names: ["./donut"],
+      handler: donutCommand,
+      parent: "bin",
+      helpName: "donut",
+      description: "Render a spinning ASCII donut",
+      helpOrder: 120,
+    },
+  ],
+  files: [
+    {
+      path: "bin/donut",
+      statPath: "src/terminal/donut.ts",
+    },
+  ],
+});

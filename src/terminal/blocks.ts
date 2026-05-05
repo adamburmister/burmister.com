@@ -4,6 +4,7 @@
 
 import type { CommandContext, KeyHandler } from "./ShellEmulator";
 import { sleep } from "./ShellEmulator";
+import { defineTerminalModule } from "./terminalModule";
 
 // ============================================
 // Sound Effects using Web Audio API
@@ -1092,3 +1093,22 @@ export async function blocksCommand(ctx: CommandContext): Promise<void> {
   }
   ctx.terminal.writeln("");
 }
+
+export const terminalModule = defineTerminalModule({
+  commands: [
+    {
+      names: ["./blocks"],
+      handler: blocksCommand,
+      parent: "bin",
+      helpName: "blocks",
+      description: "Play Blocks",
+      helpOrder: 110,
+    },
+  ],
+  files: [
+    {
+      path: "bin/blocks",
+      statPath: "src/terminal/blocks.ts",
+    },
+  ],
+});

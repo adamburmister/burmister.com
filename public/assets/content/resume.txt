@@ -3,10 +3,214 @@
 ┃  ┃ ┃┣┳┛┣┳┛┃┃  ┃ ┃┃  ┃ ┃┃┃┃   ┃┏┛┃ ┃ ┣━┫┣╸ 
 ┗━╸┗━┛╹┗╸╹┗╸╹┗━╸┗━┛┗━╸┗━┛╹ ╹   ┗┛ ╹ ╹ ╹ ╹┗━╸
 
-Hey there! Thanks for being curious, you lil' scamp.
++------------------------------------------------+
+| Download a PDF at https://burmister.com/cv.pdf |
++------------------------------------------------+
 
-My name's Adam — I'm a Senior Frontend Engineer living in Melbourne, Australia.
+ADAM BURMISTER
+Senior Software Engineer / Web Product Lead
 
-I've been doing this sort of UI-building stuff since the final days of the BBS,
-as we migrated from multi-node dialups to The Internet.
+I help businesses, big and small, build surprisingly great user experiences.
 
+Melbourne, Australia
+adam@burmister.com
+https://burmister.com
+
+Australian permanent resident / NZ citizen
+Full Australian work rights
+
+PROFILE
+-------
+Senior software engineer with 17+ years building large-scale web products at
+Stripe, Pinterest, Xero and BBC Worldwide.
+
+Comfortable across the full stack, including TypeScript and React on the front
+end, and Node.js, Ruby, Python, PHP and C#/.NET on the back end.
+
+I have strong product instincts and a track record of shipping fast, intuitive
+interfaces that scale to millions of users.
+
+Career highlights include co-founding a venture-backed startup, working as a
+Senior Frontend Engineer and Solutions Architect at Stripe, leading development
+on bbc.com, and co-authoring IronRuby in Action for Manning.
+
+Most of my career has been spent at the intersection of engineering, product
+and customer experience.
+
+CORE SKILLS
+-----------
+Languages:
+  TypeScript, JavaScript, ES6, Ruby, Python, PHP, C#/.NET, HTML5, CSS3, SQL
+
+Frontend:
+  React, Redux, Next.js, Angular, Astro, Node.js, Tailwind CSS, Radix UI,
+  Shadcn, Sass, CSS Modules, Knockout, Ionic, design systems, accessibility
+  (WCAG), Vite, Bun, TanStack
+
+Backend and APIs:
+  Node.js, Ruby on Rails, Zend (PHP), REST, GraphQL, webhooks,
+  event-driven systems
+
+Data and Infrastructure:
+  PostgreSQL, MySQL, SQLite, CouchDB, Redis, Apache, CDN/edge caching,
+  CI/CD pipelines, build tooling
+
+Cloud and DevOps:
+  Cloudflare, AWS, GCP, Docker, Git, GitHub Actions, observability,
+  performance tooling
+
+Engineering Practice:
+  System design, performance optimisation, A/B testing and experimentation,
+  automated testing with Jest, Vitest, Playwright and Storybook, RFC authoring,
+  on-call
+
+Leadership and Product:
+  Co-founder experience, institutional venture funding, customer-facing
+  solutions architecture, tech lead on the bbc.com homepage rebuild, mentoring,
+  cross-functional work with Product, Design, Sales and Support, end-to-end
+  product ownership, customer discovery, HCI-trained UX instincts
+
+Domains:
+  Payments and billing, advertising, fintech and accounting, media,
+  marketplaces, trading data
+
+AI / Modern Tooling:
+  LLM application development, prompt engineering, agentic coding workflows,
+  AI-assisted product development
+
+EXPERIENCE
+----------
+Career Break / April 2024 - Present
+Family commitments - Melbourne, Australia
+
+  - Supporting my young family while continuing hands-on implementation of
+    cloud infrastructure, modern web platforms and practical AI/LLM usage.
+  - Active personal projects exploring agentic coding workflows, edge runtimes
+    and product prototyping with LLMs.
+  - Building personal finance software with AI reconciliation features on
+    Cloudflare's stack.
+
+Databento / Feb 2023 - April 2024
+Senior Software Engineer - Wall Street market-data provider - Remote
+
+  - Designed and built the company's first React/Radix/Tailwind component
+    library, adopted across product and marketing surfaces.
+  - Owned technical direction for the front-end stack, including the migration
+    from Next.js to Astro for the marketing site.
+  - Improved Core Web Vitals and reduced maintenance cost for non-engineers.
+  - Partnered directly with founders and product on roadmap, feature scope and
+    customer feedback.
+
+  Stack: React, TypeScript, Astro, Radix UI, Tailwind, Node.js, design systems
+
+Stripe / Oct 2017 - Feb 2023
+Software Engineer / Billing Solutions Architect - Remote, US/APAC
+
+  - Shipped major user-facing surfaces in Stripe Billing, Stripe's
+    recurring-revenue product.
+  - Worked across React/TypeScript front ends and Ruby back-end services.
+  - Contributed APAC, South-East Asian and LATAM payment methods to Stripe
+    Elements, Stripe's public React SDK used by hundreds of thousands of
+    developers.
+  - Served as a Solutions Architect for about 12 months, partnering with Sales,
+    Product and customers to scope and prototype Billing implementations.
+  - Fed real-world product gaps back into the Billing engineering organisation.
+  - Mentored junior and mid-level engineers, authored design docs and
+    contributed to CI, testing and architecture decisions.
+
+  Stack: React, TypeScript, Ruby, Node.js, CI/CD, end-to-end testing,
+  system design, high scale, customer-facing work
+
+Pinterest / Nov 2015 - Sept 2017
+Software Engineer - Advertiser Growth - San Francisco / Remote
+
+  - Delivered advertiser-acquisition features on a freshly migrated React/Redux
+    platform serving advertisers globally.
+  - Worked across React/Redux UI, Node.js services and Python data pipelines.
+  - Partnered with Growth PM and Data Science on hypothesis design, A/B test
+    setup and post-experiment readouts.
+
+  Stack: React, Redux, Node.js, Python, big-data pipelines, growth,
+  A/B testing, PM partnership
+
+ServisHero / 2015 - 2017
+Co-founder / Head of UX and Engineering - South-East Asia
+
+  - Co-founded a mobile-first home-services marketplace operating across
+    Malaysia, Singapore and Thailand.
+  - Raised institutional venture funding from regional investors.
+  - Owned product, UX and front-end engineering end-to-end.
+  - Set product roadmap, ran customer interviews, hired and managed designers
+    and engineers, and shipped consumer apps and provider platform.
+  - First-hand founder/PM/EM experience: prioritisation, hiring, performance,
+    customer development and shipping under hard constraints.
+
+  Stack: React, Ionic, Node.js, mobile-first, startup, marketplace,
+  product leadership, hiring, roadmap
+
+Xero / Nov 2013 - Oct 2015
+Senior Frontend Engineer - US Payroll - San Francisco
+
+  - Built front-end payroll-management surfaces during Xero's US expansion.
+  - Integrated with C#/.NET back-end services.
+  - Owned client-side architecture, build tooling and front-end performance for
+    a regulated, high-stakes product.
+
+  Stack: JavaScript, C#/.NET, KnockoutJS, build systems, payroll
+
+Mojolly / 2010 - 2013
+Startup Founder / CEO / Frontend Engineering - London
+
+  - Founded a real-time social media filtering platform.
+  - Raised funds from Telefonica.
+  - Led a team of 6.
+  - Designed and implemented front-end architectures for real-time web
+    communications.
+  - Contributed to the Erlang back end.
+
+  Stack: Founder, leadership, fundraising, real-time systems, telecoms,
+  WebSockets
+
+BBC Worldwide / 2008 - 2010
+Software Engineer / Lead Developer, bbc.com - London
+
+  - Technical lead for the bbc.co.uk and bbc.com homepage rebuild.
+  - Re-architected the system onto a new PHP/Zend/CouchDB stack.
+  - Scaled the homepage platform to roughly 7 million users per day.
+  - Coordinated across editorial, design and infrastructure teams.
+  - Owned back-end services, front-end, Apache configuration and infrastructure
+    tuning.
+
+  Stack: PHP, Zend, CouchDB, JavaScript, Apache, public sector, high scale,
+  tech lead
+
+Xero / 2007 - 2008
+Frontend Engineer - Founding-era, pre-IPO - Wellington, New Zealand
+
+  - Joined before the company had a permanent office.
+  - Helped deliver core accounting features such as Invoicing during Xero's
+    pre-IPO hyper-growth phase.
+  - Owned marketing-site engineering and front-end build systems.
+
+  Stack: JavaScript, C#/.NET, build systems, accounting
+
+PUBLISHED WORK
+--------------
+IronRuby in Action - Manning Publishing - Co-author
+
+  Co-wrote the book on IronRuby, the .NET implementation of the Ruby language.
+
+  Topics: technical writing, Ruby, education
+
+EDUCATION
+---------
+University of Waikato / Graduated 2007
+Bachelor of Computing and Mathematical Science (BCMS)
+Hamilton, New Zealand
+
+  Second-Class Honours, Division 1 (2:1)
+  Specialisation: Human-Computer Interaction (HCI)
+
++------------------------------------------------+
+| Download a PDF at https://burmister.com/cv.pdf |
++------------------------------------------------+

@@ -6,23 +6,12 @@
  * progressively before returning control to the terminal.
  */
 
-// Import game commands from separate modules
-// import { arkanoidCommand } from "./arkanoid";
-import { blocksCommand } from "./blocks";
-import { chessCommand } from "./chess";
-import { colophonCommand } from "./colophon";
-import { cvCommand } from "./cv";
-import { dialerCommand } from "./dialer";
-import { donutCommand } from "./donut";
-// import { flappyBirdCommand } from "./flappybird";
-// import { gameOfLifeCommand } from "./gameoflife";
-// import { matrixCommand } from "./matrix";
-// import { memoryCommand } from "./memory";
-// import { minesweeperCommand } from "./minesweeper";
-// import { mpg123Command } from "./mpg123";
-// import { pongCommand } from "./pong";
-import { snakeCommand } from "./snake";
-// import { spaceInvadersCommand } from "./space-invaders";
+import { terminalFileMetadata } from "virtual:terminal-file-metadata";
+import type {
+  TerminalCommandDefinition,
+  TerminalFileDefinition,
+  TerminalModuleExport,
+} from "./terminalModule";
 
 /**
  * Key handler function type for games and interactive apps
@@ -106,6 +95,28 @@ export interface RunCommandOptions {
  */
 const commandRegistry: Map<string, CommandHandler> = new Map();
 
+const discoveredTerminalModules = import.meta.glob<TerminalModuleExport>(
+  [
+    "./*.ts",
+    "!./*.d.ts",
+    "!./ShellEmulator.ts",
+    "!./TerminalTextAnsiColor.ts",
+    "!./XTermAdapter.ts",
+    "!./terminalModule.ts",
+  ],
+  { eager: true },
+);
+
+export interface HelpEntry {
+  name: string;
+  parent: string;
+  description: string;
+  aliases: string[];
+  order: number;
+}
+
+const helpRegistry: Map<string, HelpEntry> = new Map();
+
 /**
  * Virtual file system entry
  */
@@ -130,6 +141,87 @@ interface FileEntry {
  * Virtual file system - maps file paths to entries
  */
 const virtualFileSystem: Map<string, FileEntry> = new Map();
+
+function getPathParts(path: string): { name: string; parent: string } {
+  const parts = path.split("/");
+  const name = parts.pop() ?? path;
+
+  return {
+    name,
+    parent: parts.join("/"),
+  };
+}
+
+function registerVirtualFile(definition: TerminalFileDefinition): void {
+  const metadata = terminalFileMetadata[definition.statPath];
+  const { name, parent } = getPathParts(definition.path);
+
+  virtualFileSystem.set(definition.path, {
+    name,
+    isDirectory: false,
+    size: metadata?.size ?? 0,
+    permissions: definition.permissions ?? "-rwxr-xr-x",
+    modified: metadata?.modified ?? "Jan 01 00:00",
+    parent,
+    content: definition.assetUrl
+      ? async () => {
+          const response = await fetch(definition.assetUrl ?? "");
+          if (!response.ok) {
+            throw new Error(
+              definition.contentErrorMessage ?? `Could not load ${name}`,
+            );
+          }
+
+          return await response.text();
+        }
+      : undefined,
+  });
+}
+
+function registerHelpEntry(definition: TerminalCommandDefinition): void {
+  if (definition.helpVisible === false) {
+    return;
+  }
+
+  helpRegistry.set(definition.helpName, {
+    name: definition.helpName,
+    parent: definition.parent ?? "",
+    description: definition.description,
+    aliases: definition.helpAliases ?? [],
+    order: definition.helpOrder ?? 1000,
+  });
+}
+
+function registerCommandDefinition(
+  definition: TerminalCommandDefinition,
+): void {
+  for (const name of definition.names) {
+    registerCommand(name, definition.handler);
+  }
+
+  registerHelpEntry(definition);
+}
+
+function registerTerminalModule(definition: TerminalModuleExport): void {
+  const terminalModule = definition.terminalModule;
+  if (!terminalModule) {
+    return;
+  }
+
+  for (const file of terminalModule.files ?? []) {
+    registerVirtualFile(file);
+  }
+
+  for (const command of terminalModule.commands ?? []) {
+    registerCommandDefinition(command);
+  }
+}
+
+function registerDiscoveredTerminalModules(): void {
+  for (const definition of Object.values(discoveredTerminalModules)) {
+    registerTerminalModule(definition);
+  }
+}
 
 /**
  * Current working directory (always starts and ends without /)
@@ -214,7 +306,6 @@ function isValidDirectory(path: string): boolean {
  * Initialize the virtual file system with default files
  */
 function initFileSystem(): void {
-  // Root level directories
   virtualFileSystem.set("docs", {
     name: "docs",
     isDirectory: true,
@@ -223,22 +314,6 @@ function initFileSystem(): void {
     modified: "Dec 10 12:00",
     parent: "",
   });
-  // virtualFileSystem.set("Music", {
-  //   name: "Music",
-  //   isDirectory: true,
-  //   size: 4096,
-  //   permissions: "drwxr-xr-x",
-  //   modified: "Dec 28 00:00",
-  //   parent: "",
-  // });
-  // virtualFileSystem.set("Videos", {
-  //   name: "Videos",
-  //   isDirectory: true,
-  //   size: 4096,
-  //   permissions: "drwxr-xr-x",
-  //   modified: "Dec 21 14:20",
-  //   parent: "",
-  // });
   virtualFileSystem.set("bin", {
     name: "bin",
     isDirectory: true,
@@ -247,185 +322,6 @@ function initFileSystem(): void {
     modified: "May 06 07:46",
     parent: "",
   });
-
-  // Files in Music directory
-  // virtualFileSystem.set("Music/arcade.mp3", {
-  //   name: "arcade.mp3",
-  //   isDirectory: false,
-  //   size: 3145728, // ~3MB
-  //   permissions: "-rw-r--r--",
-  //   modified: "Dec 28 00:00",
-  //   parent: "Music",
-  // });
-  // virtualFileSystem.set("Music/chill.mp3", {
-  //   name: "chill.mp3",
-  //   isDirectory: false,
-  //   size: 4194304, // ~4MB
-  //   permissions: "-rw-r--r--",
-  //   modified: "Dec 28 00:00",
-  //   parent: "Music",
-  // });
-
-  // Files in docs directory
-  // virtualFileSystem.set("docs/license.txt", {
-  //   name: "license.txt",
-  //   isDirectory: false,
-  //   size: 35147,
-  //   permissions: "-rw-r--r--",
-  //   modified: "Dec 24 12:00",
-  //   parent: "docs",
-  //   content: async () => {
-  //     const response = await fetch("/assets/content/license.txt");
-  //     if (!response.ok) {
-  //       throw new Error("Could not load license file");
-  //     }
-  //     return await response.text();
-  //   },
-  // });
-  virtualFileSystem.set("docs/resume.txt", {
-    name: "resume.txt",
-    isDirectory: false,
-    size: 255,
-    permissions: "-rw-r--r--",
-    modified: "Dec 10 00:00",
-    parent: "docs",
-    content: async () => {
-      const response = await fetch("/assets/content/resume.txt");
-      if (!response.ok) {
-        throw new Error("Could not load resume file");
-      }
-      return await response.text();
-    },
-  });
-  virtualFileSystem.set("docs/colophon.txt", {
-    name: "colophon.txt",
-    isDirectory: false,
-    size: 178,
-    permissions: "-rw-r--r--",
-    modified: "May 06 07:27",
-    parent: "docs",
-    content: async () => {
-      const response = await fetch("/assets/content/colophon.txt");
-      if (!response.ok) {
-        throw new Error("Could not load colophon file");
-      }
-      return await response.text();
-    },
-  });
-
-  // Files in bin directory
-  virtualFileSystem.set("bin/cv", {
-    name: "cv",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 25 00:00",
-    parent: "bin",
-  });
-  // virtualFileSystem.set("bin/pong", {
-  //   name: "pong",
-  //   isDirectory: false,
-  //   size: 4096,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 25 00:00",
-  //   parent: "bin",
-  // });
-  virtualFileSystem.set("bin/snake", {
-    name: "snake",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 25 00:00",
-    parent: "bin",
-  });
-  virtualFileSystem.set("bin/blocks", {
-    name: "blocks",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 25 00:00",
-    parent: "bin",
-  });
-  // virtualFileSystem.set("bin/matrix", {
-  //   name: "matrix",
-  //   isDirectory: false,
-  //   size: 4096,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 25 00:00",
-  //   parent: "bin",
-  // });
-  virtualFileSystem.set("bin/donut", {
-    name: "donut",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 27 00:00",
-    parent: "bin",
-  });
-  // virtualFileSystem.set("bin/space-invaders", {
-  //   name: "space-invaders",
-  //   isDirectory: false,
-  //   size: 8192,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 27 00:00",
-  //   parent: "bin",
-  // });
-  // virtualFileSystem.set("bin/arkanoid", {
-  //   name: "arkanoid",
-  //   isDirectory: false,
-  //   size: 8192,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 27 00:00",
-  //   parent: "bin",
-  // });
-  // virtualFileSystem.set("bin/flappybird", {
-  //   name: "flappybird",
-  //   isDirectory: false,
-  //   size: 4096,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 27 00:00",
-  //   parent: "bin",
-  // });
-  virtualFileSystem.set("bin/chess", {
-    name: "chess",
-    isDirectory: false,
-    size: 16384,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 27 00:00",
-    parent: "bin",
-  });
-  // virtualFileSystem.set("bin/minesweeper", {
-  //   name: "minesweeper",
-  //   isDirectory: false,
-  //   size: 8192,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 28 00:00",
-  //   parent: "bin",
-  // });
-  // virtualFileSystem.set("bin/life", {
-  //   name: "life",
-  //   isDirectory: false,
-  //   size: 8192,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 28 00:00",
-  //   parent: "bin",
-  // });
-  // virtualFileSystem.set("bin/memory", {
-  //   name: "memory",
-  //   isDirectory: false,
-  //   size: 8192,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Dec 28 00:00",
-  //   parent: "bin",
-  // });
-  // virtualFileSystem.set("bin/feed", {
-  //   name: "feed",
-  //   isDirectory: false,
-  //   size: 4096,
-  //   permissions: "-rwxr-xr-x",
-  //   modified: "Jan 29 00:00",
-  //   parent: "bin",
-  // });
 }
 
 // Initialize the file system
@@ -465,6 +361,63 @@ export function unregisterCommand(name: string): void {
  */
 export function hasCommand(name: string): boolean {
   return commandRegistry.has(name.toLowerCase());
+}
+
+export async function loadVirtualFileContent(
+  inputPath: string,
+): Promise<string> {
+  const resolvedPath = resolvePath(inputPath);
+  const file = virtualFileSystem.get(resolvedPath);
+
+  if (!file) {
+    throw new Error("No such file or directory");
+  }
+
+  if (file.isDirectory) {
+    throw new Error("Is a directory");
+  }
+
+  if (file.content === undefined) {
+    throw new Error("Unable to read file");
+  }
+
+  return typeof file.content === "function"
+    ? await file.content()
+    : file.content;
+}
+
+function registerCoreCommand(
+  name: string,
+  handler: CommandHandler,
+  help: Omit<TerminalCommandDefinition, "names" | "handler">,
+): void {
+  registerCommand(name, handler);
+  registerHelpEntry({
+    names: [name],
+    handler,
+    ...help,
+  });
+}
+
+export function getVisibleHelpEntries(): HelpEntry[] {
+  return [...helpRegistry.values()].sort((a, b) => {
+    if (a.parent !== b.parent) {
+      if (a.parent === "") {
+        return -1;
+      }
+      if (b.parent === "") {
+        return 1;
+      }
+
+      return a.parent.localeCompare(b.parent);
+    }
+
+    if (a.order !== b.order) {
+      return a.order - b.order;
+    }
+
+    return a.name.localeCompare(b.name);
+  });
 }
 
 /**
@@ -612,26 +565,6 @@ export function getInitialOutput(): string {
 // Built-in Commands
 // ============================================
 
-// Help command
-registerCommand("help", (ctx) => {
-  ctx.terminal.writeln("Available commands:");
-  ctx.terminal.writeln("  help       - Show this help message");
-  // ctx.terminal.writeln("  resume     - Display Adam's resume summary");
-  ctx.terminal.writeln("  cv         - Display Adam's resume");
-  // ctx.terminal.writeln("  projects   - Display selected work");
-  // ctx.terminal.writeln("  skills     - Display technical skills");
-  // ctx.terminal.writeln("  contact    - Display contact links");
-  ctx.terminal.writeln("  colophon   - Show credits and build notes");
-  ctx.terminal.writeln("  clear      - Clear the terminal screen");
-  ctx.terminal.writeln("  cd         - Change directory");
-  ctx.terminal.writeln("  ls         - List directory contents");
-  ctx.terminal.writeln("  cat        - Display file contents");
-  // ctx.terminal.writeln("  ffplay     - Play video files");
-  // ctx.terminal.writeln("  mpg123     - Play MP3 audio files");
-  // ctx.terminal.writeln("  access     - Connect to remote cluster node");
-  ctx.terminal.writeln("  dialer     - Dial the Burmister BBS");
-});
-
 // registerCommand("resume", cvCommand);
 // registerCommand("cv", cvCommand);
 
@@ -676,188 +609,222 @@ registerCommand("help", (ctx) => {
 // });
 
 // CD command - change directory
-registerCommand("cd", (ctx) => {
-  // No argument - go to home directory
-  if (ctx.args.length < 2) {
-    currentDirectory = "";
-    return;
-  }
-
-  const targetPath = ctx.args[1];
-
-  // Handle special cases
-  if (targetPath === "~" || targetPath === "/") {
-    currentDirectory = "";
-    return;
-  }
-
-  if (targetPath === "-") {
-    // In a real shell this would go to previous directory
-    // For simplicity, just go home
-    currentDirectory = "";
-    return;
-  }
-
-  // Resolve the path
-  const resolvedPath = resolvePath(targetPath);
-
-  // Check if the resolved path is a valid directory
-  if (!isValidDirectory(resolvedPath)) {
-    ctx.terminal.writeln(`cd: ${targetPath}: No such file or directory`);
-    return;
-  }
-
-  currentDirectory = resolvedPath;
-});
-
-// Clear command
-registerCommand("clear", (ctx) => {
-  ctx.terminal.clear();
-});
-
-// LS command - list files from virtual file system
-registerCommand("ls", (ctx) => {
-  // Parse flags and path argument
-  const hasLongFormat =
-    ctx.args.includes("-l") ||
-    ctx.args.includes("-la") ||
-    ctx.args.includes("-al");
-
-  // Find the path argument (skip flags)
-  let targetDir = currentDirectory;
-  for (let i = 1; i < ctx.args.length; i++) {
-    if (!ctx.args[i].startsWith("-")) {
-      targetDir = resolvePath(ctx.args[i]);
-      break;
-    }
-  }
-
-  // Check if target is a valid directory
-  if (targetDir !== "" && !isValidDirectory(targetDir)) {
-    // Check if it's a file
-    const file = virtualFileSystem.get(targetDir);
-    if (file && !file.isDirectory) {
-      if (hasLongFormat) {
-        ctx.terminal.writeln(
-          `${file.permissions}  1 guest guest ${file.size.toString().padStart(8)} ${file.modified} ${file.name}`,
-        );
-      } else {
-        ctx.terminal.writeln(file.name);
-      }
+registerCoreCommand(
+  "cd",
+  (ctx) => {
+    // No argument - go to home directory
+    if (ctx.args.length < 2) {
+      currentDirectory = "";
       return;
     }
-    ctx.terminal.writeln(
-      `ls: cannot access '${ctx.args[1] || targetDir}': No such file or directory`,
-    );
-    return;
-  }
 
-  // Get files in the target directory
-  const files = getFilesInDirectory(targetDir);
+    const targetPath = ctx.args[1];
 
-  if (files.length === 0) {
-    // Empty directory, don't print anything
-    return;
-  }
-
-  // Check for -l flag
-  if (hasLongFormat) {
-    for (const file of files) {
-      const displayName = file.isDirectory ? `${file.name}/` : file.name;
-      ctx.terminal.writeln(
-        `${file.permissions}  1 guest guest ${file.size.toString().padStart(8)} ${file.modified} ${displayName}`,
-      );
+    // Handle special cases
+    if (targetPath === "~" || targetPath === "/") {
+      currentDirectory = "";
+      return;
     }
-  } else {
-    const displayNames = files.map((f) =>
-      f.isDirectory ? `${f.name}/` : f.name,
-    );
-    ctx.terminal.writeln(displayNames.join("  "));
-  }
-});
 
-// Cat command - read files from virtual file system
-registerCommand("cat", async (ctx) => {
-  if (ctx.args.length < 2) {
-    ctx.terminal.writeln("cat: missing file operand");
-    return;
-  }
+    if (targetPath === "-") {
+      // In a real shell this would go to previous directory
+      // For simplicity, just go home
+      currentDirectory = "";
+      return;
+    }
 
-  const inputPath = ctx.args[1];
-  const resolvedPath = resolvePath(inputPath);
-  const file = virtualFileSystem.get(resolvedPath);
+    // Resolve the path
+    const resolvedPath = resolvePath(targetPath);
 
-  if (!file) {
-    ctx.terminal.writeln(`cat: ${inputPath}: No such file or directory`);
-    return;
-  }
+    // Check if the resolved path is a valid directory
+    if (!isValidDirectory(resolvedPath)) {
+      ctx.terminal.writeln(`cd: ${targetPath}: No such file or directory`);
+      return;
+    }
 
-  if (file.isDirectory) {
-    ctx.terminal.writeln(`cat: ${inputPath}: Is a directory`);
-    return;
-  }
+    currentDirectory = resolvedPath;
+  },
+  {
+    helpName: "cd",
+    description: "Change directory",
+    helpOrder: 40,
+  },
+);
 
-  if (file.content === undefined) {
-    ctx.terminal.writeln(`cat: ${inputPath}: Unable to read file`);
-    return;
-  }
+// Clear command
+registerCoreCommand(
+  "clear",
+  (ctx) => {
+    ctx.terminal.clear();
+  },
+  {
+    helpName: "clear",
+    description: "Clear the terminal screen",
+    helpOrder: 50,
+  },
+);
 
-  try {
-    // Handle async content loaders
-    const content =
-      typeof file.content === "function" ? await file.content() : file.content;
+// LS command - list files from virtual file system
+registerCoreCommand(
+  "ls",
+  (ctx) => {
+    // Parse flags and path argument
+    const hasLongFormat =
+      ctx.args.includes("-l") ||
+      ctx.args.includes("-la") ||
+      ctx.args.includes("-al");
 
-    const lines = content.split("\n");
+    // Find the path argument (skip flags)
+    let targetDir = currentDirectory;
+    for (let i = 1; i < ctx.args.length; i++) {
+      if (!ctx.args[i].startsWith("-")) {
+        targetDir = resolvePath(ctx.args[i]);
+        break;
+      }
+    }
 
-    // Check if content has @@@ markers for pauses
-    const hasDelimiters = lines.some((line) => line.trim() === "@@@");
-
-    if (hasDelimiters) {
-      // Group lines into batches separated by @@@
-      const batches: string[][] = [];
-      let currentBatch: string[] = [];
-
-      for (const line of lines) {
-        if (line.trim() === "@@@") {
-          // End current batch and start a new one
-          if (currentBatch.length > 0) {
-            batches.push(currentBatch);
-            currentBatch = [];
-          }
+    // Check if target is a valid directory
+    if (targetDir !== "" && !isValidDirectory(targetDir)) {
+      // Check if it's a file
+      const file = virtualFileSystem.get(targetDir);
+      if (file && !file.isDirectory) {
+        if (hasLongFormat) {
+          ctx.terminal.writeln(
+            `${file.permissions}  1 guest guest ${file.size.toString().padStart(8)} ${file.modified} ${file.name}`,
+          );
         } else {
-          currentBatch.push(line);
+          ctx.terminal.writeln(file.name);
         }
+        return;
       }
+      ctx.terminal.writeln(
+        `ls: cannot access '${ctx.args[1] || targetDir}': No such file or directory`,
+      );
+      return;
+    }
 
-      // Don't forget the last batch
-      if (currentBatch.length > 0) {
-        batches.push(currentBatch);
-      }
+    // Get files in the target directory
+    const files = getFilesInDirectory(targetDir);
 
-      // Print each batch with a 500ms delay between them
-      for (let i = 0; i < batches.length; i++) {
-        const batch = batches[i];
+    if (files.length === 0) {
+      // Empty directory, don't print anything
+      return;
+    }
 
-        // Print all lines in this batch
-        for (const line of batch) {
-          ctx.terminal.writeln(line);
-        }
-
-        // Wait 500ms before the next batch (unless this is the last batch)
-        if (i < batches.length - 1) {
-          await sleep(500);
-        }
+    // Check for -l flag
+    if (hasLongFormat) {
+      for (const file of files) {
+        const displayName = file.isDirectory ? `${file.name}/` : file.name;
+        ctx.terminal.writeln(
+          `${file.permissions}  1 guest guest ${file.size.toString().padStart(8)} ${file.modified} ${displayName}`,
+        );
       }
     } else {
-      // No delimiters, print all lines immediately
-      for (const line of lines) {
-        ctx.terminal.writeln(line);
-      }
+      const displayNames = files.map((f) =>
+        f.isDirectory ? `${f.name}/` : f.name,
+      );
+      ctx.terminal.writeln(displayNames.join("  "));
     }
-  } catch (_error) {
-    ctx.terminal.writeln(`cat: ${inputPath}: Error reading file`);
-  }
-});
+  },
+  {
+    helpName: "ls",
+    description: "List directory contents",
+    helpOrder: 60,
+  },
+);
+
+// Cat command - read files from virtual file system
+registerCoreCommand(
+  "cat",
+  async (ctx) => {
+    if (ctx.args.length < 2) {
+      ctx.terminal.writeln("cat: missing file operand");
+      return;
+    }
+
+    const inputPath = ctx.args[1];
+    const resolvedPath = resolvePath(inputPath);
+    const file = virtualFileSystem.get(resolvedPath);
+
+    if (!file) {
+      ctx.terminal.writeln(`cat: ${inputPath}: No such file or directory`);
+      return;
+    }
+
+    if (file.isDirectory) {
+      ctx.terminal.writeln(`cat: ${inputPath}: Is a directory`);
+      return;
+    }
+
+    if (file.content === undefined) {
+      ctx.terminal.writeln(`cat: ${inputPath}: Unable to read file`);
+      return;
+    }
+
+    try {
+      // Handle async content loaders
+      const content =
+        typeof file.content === "function"
+          ? await file.content()
+          : file.content;
+
+      const lines = content.split("\n");
+
+      // Check if content has @@@ markers for pauses
+      const hasDelimiters = lines.some((line) => line.trim() === "@@@");
+
+      if (hasDelimiters) {
+        // Group lines into batches separated by @@@
+        const batches: string[][] = [];
+        let currentBatch: string[] = [];
+
+        for (const line of lines) {
+          if (line.trim() === "@@@") {
+            // End current batch and start a new one
+            if (currentBatch.length > 0) {
+              batches.push(currentBatch);
+              currentBatch = [];
+            }
+          } else {
+            currentBatch.push(line);
+          }
+        }
+
+        // Don't forget the last batch
+        if (currentBatch.length > 0) {
+          batches.push(currentBatch);
+        }
+
+        // Print each batch with a 500ms delay between them
+        for (let i = 0; i < batches.length; i++) {
+          const batch = batches[i];
+
+          // Print all lines in this batch
+          for (const line of batch) {
+            ctx.terminal.writeln(line);
+          }
+
+          // Wait 500ms before the next batch (unless this is the last batch)
+          if (i < batches.length - 1) {
+            await sleep(500);
+          }
+        }
+      } else {
+        // No delimiters, print all lines immediately
+        for (const line of lines) {
+          ctx.terminal.writeln(line);
+        }
+      }
+    } catch (_error) {
+      ctx.terminal.writeln(`cat: ${inputPath}: Error reading file`);
+    }
+  },
+  {
+    helpName: "cat",
+    description: "Display file contents",
+    helpOrder: 70,
+  },
+);
 
 // Matrix command - animated matrix effect (runs until Ctrl+C or Q)
 // registerCommand("./matrix", matrixCommand);
@@ -1052,62 +1019,7 @@ registerCommand("cat", async (ctx) => {
 //   }
 // });
 
-// ============================================
-// Bin Commands (imported from separate modules)
-// ============================================
-
-// Pong game - classic arcade game with AI opponent
-// registerCommand("./pong", pongCommand);
-
-// Snake game - classic snake game
-registerCommand("./snake", snakeCommand);
-
-// Blocks game - classic falling blocks puzzle
-registerCommand("./blocks", blocksCommand);
-
-// Donut - spinning 3D ASCII donut with shading
-registerCommand("./donut", donutCommand);
-
-// Space Invaders - classic alien shooter
-// registerCommand("./space-invaders", spaceInvadersCommand);
-
-// Arkanoid - classic brick breaker
-// registerCommand("./arkanoid", arkanoidCommand);
-
-// Flappy Bird - tap to fly through pipes
-// registerCommand("./flappybird", flappyBirdCommand);
-
-// Chess - classic chess with AI opponent
-registerCommand("./chess", chessCommand);
-
-// Minesweeper - classic puzzle game
-// registerCommand("./minesweeper", minesweeperCommand);
-
-// Conway's Game of Life - cellular automaton
-// registerCommand("./life", gameOfLifeCommand);
-
-// Memory - classic card matching game
-// registerCommand("./memory", memoryCommand);
-
-// Colophon - show credits and build notes
-registerCommand("./colophon", colophonCommand);
-registerCommand("colophon", colophonCommand); // Global
-
-// CV - display resume content from virtual file system
-registerCommand("./cv", cvCommand);
-registerCommand("cv", cvCommand); // Global
-
-// Feed - dev.to RSS feed reader
-// registerCommand("./feed", feedCommand);
-
-// mpg123 - MP3 audio player with visual equalizer
-// registerCommand("mpg123", mpg123Command);
-
-// access - Easter egg command (Jurassic Park reference)
-// registerCommand("access", accessCommand);
-
-// dialer - BBS dial-up connection sequence
-registerCommand("dialer", dialerCommand); // Global
+registerDiscoveredTerminalModules();
 
 /**
  * Get tab completions for a partial path

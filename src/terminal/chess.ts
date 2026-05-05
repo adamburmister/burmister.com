@@ -4,6 +4,7 @@
 
 import type { CommandContext, KeyHandler } from "./ShellEmulator";
 import { sleep } from "./ShellEmulator";
+import { defineTerminalModule } from "./terminalModule";
 
 // ============================================
 // Sound Effects using Web Audio API
@@ -1409,3 +1410,22 @@ export async function chessCommand(ctx: CommandContext): Promise<void> {
   ctx.terminal.writeln("Thanks for playing Chess!");
   ctx.terminal.writeln("");
 }
+
+export const terminalModule = defineTerminalModule({
+  commands: [
+    {
+      names: ["./chess"],
+      handler: chessCommand,
+      parent: "bin",
+      helpName: "chess",
+      description: "Play Chess",
+      helpOrder: 130,
+    },
+  ],
+  files: [
+    {
+      path: "bin/chess",
+      statPath: "src/terminal/chess.ts",
+    },
+  ],
+});

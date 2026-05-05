@@ -4,6 +4,7 @@
 
 import type { CommandContext, KeyHandler } from "./ShellEmulator";
 import { sleep } from "./ShellEmulator";
+import { defineTerminalModule } from "./terminalModule";
 
 // ============================================
 // Sound Effects using Web Audio API
@@ -666,3 +667,22 @@ export async function snakeCommand(ctx: CommandContext): Promise<void> {
   }
   ctx.terminal.writeln("");
 }
+
+export const terminalModule = defineTerminalModule({
+  commands: [
+    {
+      names: ["./snake"],
+      handler: snakeCommand,
+      parent: "bin",
+      helpName: "snake",
+      description: "Play Snake",
+      helpOrder: 100,
+    },
+  ],
+  files: [
+    {
+      path: "bin/snake",
+      statPath: "src/terminal/snake.ts",
+    },
+  ],
+});

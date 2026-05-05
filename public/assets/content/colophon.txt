@@ -4,18 +4,27 @@
 ┗┛┗┛┗┗┛┣┛┛┗┗┛┛┗
        ┛       
 
-This page is heavily inspired by the work of the great
+* This page is heavily inspired by the work of the great
 https://github.com/remojansen Using his great `cool-retro-term-webgl` project
 (https://github.com/remojansen/cool-retro-term-webgl), which is in turn a port
 to WebGL from `cool-retro-term` (https://github.com/Swordfish90/cool-retro-term)
 by Filippo Scognamiglio. 
 
-I have extended this work with colour ANSI support for the terminal as well as a
-mock-BBS UI, as well as some asset optimisations and integration into an Astro
-build and Cloudflare Worker deploy (my preferred light-weight stack).
+I added...
+  * Colour ANSI support for the terminal
+  * A mock-BBS UI
+  * Re-architected command registration
+  * Optimised assets for web performance
+  * Astro with a Cloudflare Worker deploy (my preferred light-weight stack).
 
-I've used OpenAI Codex with GPT-5.5 (Medium Intelligence setting) throughout
+* I've used OpenAI Codex with GPT-5.5 (Medium Intelligence setting) throughout
 development as part of my personal learning of how to integrate AI Agents into
 my creative workflow.
+
+I've been doing this sort of UI-building stuff since the final days of the BBS,
+as we migrated from multi-node dialup BBSes to The Internet. 
+My heroes at the dawn of this new digital age were still the global ANSI art
+scene, in particular groups like ACiD (https://www.acid.org/). You'll see hints
+of this style throughout my own ANSI art on this site.
 
 License: GPL-3.0
