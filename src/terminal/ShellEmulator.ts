@@ -6,12 +6,12 @@
  * progressively before returning control to the terminal.
  */
 
+import { portfolio } from "../data/portfolio";
 // Import game commands from separate modules
 import { accessCommand } from "./access";
 import { arkanoidCommand } from "./arkanoid";
 import { blocksCommand } from "./blocks";
 import { chessCommand } from "./chess";
-import { cvCommand } from "./cv";
 import { donutCommand } from "./donut";
 import { feedCommand } from "./feed";
 import { flappyBirdCommand } from "./flappybird";
@@ -263,37 +263,30 @@ function initFileSystem(): void {
 		modified: "Dec 24 12:00",
 		parent: "Documents",
 		content: async () => {
-			const response = await fetch("assets/content/license.txt");
+			const response = await fetch("/assets/content/license.txt");
 			if (!response.ok) {
 				throw new Error("Could not load license file");
 			}
 			return await response.text();
 		},
 	});
-	virtualFileSystem.set("Documents/mvp.txt", {
-		name: "mvp.txt",
+	virtualFileSystem.set("Documents/resume.txt", {
+		name: "resume.txt",
 		isDirectory: false,
 		size: 2048,
 		permissions: "-rw-r--r--",
 		modified: "Dec 25 00:00",
 		parent: "Documents",
-		content: async () => {
-			const response = await fetch("assets/content/mvp.txt");
-			if (!response.ok) {
-				throw new Error("Could not load mvp file");
-			}
-			return await response.text();
-		},
-	});
+		content: `${portfolio.name}
+${portfolio.title}
+${portfolio.domain}
 
-	// Files in Videos directory
-	virtualFileSystem.set("Videos/interview.mp4", {
-		name: "interview.mp4",
-		isDirectory: false,
-		size: 15728640, // ~15MB placeholder
-		permissions: "-rw-r--r--",
-		modified: "Dec 25 00:00",
-		parent: "Videos",
+${portfolio.description}
+
+Resume PDF: ${portfolio.resumePdfPath}
+Resume HTML: /resume
+Projects: /projects
+`,
 	});
 
 	// Files in Programs directory
@@ -419,7 +412,7 @@ initFileSystem();
  */
 function getPrompt(): string {
 	const dirDisplay = currentDirectory ? `~/${currentDirectory}` : "~";
-	return `guest@remojansen.com ${dirDisplay} $ `;
+	return `guest@burmister.com:${dirDisplay}$ `;
 }
 
 /**
@@ -587,14 +580,93 @@ export function getInitialOutput(): string {
 // Help command
 registerCommand("help", (ctx) => {
 	ctx.terminal.writeln("Available commands:");
-	ctx.terminal.writeln("  help     - Show this help message");
-	ctx.terminal.writeln("  clear    - Clear the terminal screen");
-	ctx.terminal.writeln("  cd       - Change directory");
-	ctx.terminal.writeln("  ls       - List directory contents");
-	ctx.terminal.writeln("  cat      - Display file contents");
-	ctx.terminal.writeln("  ffplay   - Play video files");
-	ctx.terminal.writeln("  mpg123   - Play MP3 audio files");
-	ctx.terminal.writeln("  access   - Connect to remote cluster node");
+	ctx.terminal.writeln("  help       - Show this help message");
+	ctx.terminal.writeln("  resume     - Display Adam's resume summary");
+	ctx.terminal.writeln("  cv         - Alias for resume");
+	ctx.terminal.writeln("  projects   - Display selected work");
+	ctx.terminal.writeln("  skills     - Display technical skills");
+	ctx.terminal.writeln("  contact    - Display contact links");
+	ctx.terminal.writeln("  colophon   - Show credits and build notes");
+	ctx.terminal.writeln("  clear      - Clear the terminal screen");
+	ctx.terminal.writeln("  cd         - Change directory");
+	ctx.terminal.writeln("  ls         - List directory contents");
+	ctx.terminal.writeln("  cat        - Display file contents");
+	ctx.terminal.writeln("  ffplay     - Play video files");
+	ctx.terminal.writeln("  mpg123     - Play MP3 audio files");
+	ctx.terminal.writeln("  access     - Connect to remote cluster node");
+});
+
+function writePortfolioHeader(ctx: CommandContext): void {
+	ctx.terminal.writeln(portfolio.name);
+	ctx.terminal.writeln(portfolio.title);
+	ctx.terminal.writeln(portfolio.domain);
+	ctx.terminal.writeln("");
+	ctx.terminal.writeln(portfolio.description);
+	ctx.terminal.writeln("");
+}
+
+const resumeCommand: CommandHandler = (ctx) => {
+	writePortfolioHeader(ctx);
+	ctx.terminal.writeln("Experience");
+	ctx.terminal.writeln("----------");
+	for (const entry of portfolio.experience) {
+		ctx.terminal.writeln(entry.role);
+		ctx.terminal.writeln(
+			`${entry.company} | ${entry.period} | ${entry.location}`,
+		);
+		ctx.terminal.writeln(entry.summary);
+		ctx.terminal.writeln("");
+	}
+	ctx.terminal.writeln(`PDF: ${portfolio.resumePdfPath}`);
+	ctx.terminal.writeln("HTML: /resume");
+};
+
+registerCommand("resume", resumeCommand);
+registerCommand("cv", resumeCommand);
+registerCommand("./cv", resumeCommand);
+
+registerCommand("projects", (ctx) => {
+	ctx.terminal.writeln("Selected work");
+	ctx.terminal.writeln("-------------");
+	for (const project of portfolio.projects) {
+		ctx.terminal.writeln(project.name);
+		ctx.terminal.writeln(project.summary);
+		ctx.terminal.writeln(`Stack: ${project.technologies.join(", ")}`);
+		if (project.url) {
+			ctx.terminal.writeln(`URL: ${project.url}`);
+		}
+		ctx.terminal.writeln("");
+	}
+	ctx.terminal.writeln("HTML: /projects");
+});
+
+registerCommand("skills", (ctx) => {
+	ctx.terminal.writeln("Skills");
+	ctx.terminal.writeln("------");
+	for (const skill of portfolio.skills) {
+		ctx.terminal.writeln(`- ${skill}`);
+	}
+});
+
+registerCommand("contact", (ctx) => {
+	ctx.terminal.writeln("Contact");
+	ctx.terminal.writeln("-------");
+	for (const link of portfolio.social) {
+		ctx.terminal.writeln(`${link.label}: ${link.url}`);
+	}
+});
+
+registerCommand("colophon", (ctx) => {
+	ctx.terminal.writeln("Colophon");
+	ctx.terminal.writeln("--------");
+	ctx.terminal.writeln(
+		`Original terminal foundation by ${portfolio.colophon.originalAuthor}.`,
+	);
+	ctx.terminal.writeln(
+		`Original project: ${portfolio.colophon.originalProjectUrl}`,
+	);
+	ctx.terminal.writeln(`License: ${portfolio.colophon.license}`);
+	ctx.terminal.writeln("HTML: /colophon");
 });
 
 // CD command - change directory
@@ -791,10 +863,7 @@ registerCommand("./matrix", matrixCommand);
 /**
  * Map of video files to their actual URLs
  */
-const videoFiles: Map<string, string> = new Map([
-	["Videos/interview.mp4", "assets/video/interview.webm"],
-	["interview.mp4", "assets/video/interview.webm"],
-]);
+const videoFiles: Map<string, string> = new Map();
 
 /**
  * ffplay command - play video files with CRT effects
@@ -980,9 +1049,6 @@ registerCommand("ffplay", async (ctx) => {
 		ctx.terminal.writeln("Playback finished.");
 	}
 });
-
-// CV command - displays CV information
-registerCommand("./cv", cvCommand);
 
 // ============================================
 // Game Commands (imported from separate modules)

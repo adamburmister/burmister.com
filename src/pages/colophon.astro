@@ -1,0 +1,38 @@
+---
+import { portfolio } from "../data/portfolio";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+export const prerender = true;
+---
+
+<BaseLayout title="Colophon" canonicalPath="/colophon" image={portfolio.imagePath}>
+	<main class="page">
+		<header>
+			<p class="eyebrow">colophon</p>
+			<h1>Credits and Build Notes</h1>
+			<p>
+				This site is a reworked personal portfolio for {portfolio.name}, built
+				with Astro, Vite, TypeScript, WebGL, xterm.js, and Cloudflare.
+			</p>
+			<nav>
+				<a href="/">Terminal</a>
+				<a href="/resume">Resume</a>
+				<a href="/projects">Projects</a>
+			</nav>
+		</header>
+
+		<section class="panel">
+			<h2>Original Inspiration</h2>
+			<p>
+				The retro terminal foundation was created by {portfolio.colophon.originalAuthor}.
+				This rework credits the original project and keeps the license lineage visible.
+			</p>
+			<p>
+				<a href={portfolio.colophon.originalProjectUrl}>
+					{portfolio.colophon.originalProjectUrl}
+				</a>
+			</p>
+			<p>License: {portfolio.colophon.license}</p>
+		</section>
+	</main>
+</BaseLayout>

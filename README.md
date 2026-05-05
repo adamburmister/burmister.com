@@ -1,21 +1,26 @@
-# www.remojansen.com
+# burmister.com
 
-My personal website. Powered by TypeScript, Three.js (WebGL) and Xterm.js (terminal emulator).
+Adam Burmister's personal CV and portfolio website. Powered by Astro, Vite,
+TypeScript, Three.js (WebGL), xterm.js, and Cloudflare.
 
-![](assets/images/thumbnail.png)
+![](public/assets/images/thumbnail.png)
 
-![](assets/images/cmd.png)
+## Development
 
-![](assets/images/blocks.png)
+```sh
+npm run dev
+```
 
-![](assets/images/chess.png)
+## Build
 
-![](assets/images/invaders.png)
+```sh
+npm run build
+```
 
-![](assets/images/arkanoid.png)
+## Credit
 
-![](assets/images/ffplay.png)
-
-The site was inspired by https://github.com/Swordfish90/cool-retro-term and developed with heavy usage of GitHub Copilot (Claude Opus 4.5).
+This site is a reworked personal portfolio based on Remo H. Jansen's
+cool-retro-term-webgl project:
+https://github.com/remojansen/cool-retro-term-webgl/tree/main
 
 Licensed under GNU General Public License v.3.0. See [LICENSE](LICENSE) for details.

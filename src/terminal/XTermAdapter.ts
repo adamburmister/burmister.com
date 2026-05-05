@@ -32,6 +32,11 @@ interface AudioControls {
 }
 
 export class XTermAdapter {
+	private static readonly BIOS_PROGRESS_TOKEN = "%%%";
+	private static readonly BIOS_PROGRESS_DURATION_MS = 100;
+	private static readonly BIOS_PROGRESS_FRAME_MS = 20;
+	private static readonly BIOS_PROGRESS_BAR_WIDTH = 10;
+
 	private xterm: Terminal;
 	private terminalText: TerminalText;
 	private currentLine: string = "";
@@ -508,7 +513,7 @@ export class XTermAdapter {
 	private async printBiosSequence(): Promise<void> {
 		try {
 			// Fetch the BIOS content
-			const response = await fetch("./assets/content/bios.txt");
+			const response = await fetch("/assets/content/bios.txt");
 			if (!response.ok) {
 				console.warn("Could not load BIOS content:", response.statusText);
 				return;
@@ -544,8 +549,12 @@ export class XTermAdapter {
 
 				// Print all lines in this batch
 				for (const line of batch) {
-					this.outputBuffer += `${line}\n`;
-					this.xterm.write(`${line}\r\n`);
+					if (line.includes(XTermAdapter.BIOS_PROGRESS_TOKEN)) {
+						await this.printBiosProgressLine(line);
+					} else {
+						this.outputBuffer += `${line}\n`;
+						this.xterm.write(`${line}\r\n`);
+					}
 				}
 				this.updateTerminalText();
 
@@ -569,6 +578,56 @@ export class XTermAdapter {
 	 */
 	private sleep(ms: number): Promise<void> {
 		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	private writeXterm(text: string): Promise<void> {
+		return new Promise((resolve) => {
+			this.xterm.write(text, () => resolve());
+		});
+	}
+
+	private async printBiosProgressLine(line: string): Promise<void> {
+		const frameCount = Math.ceil(
+			XTermAdapter.BIOS_PROGRESS_DURATION_MS /
+				XTermAdapter.BIOS_PROGRESS_FRAME_MS,
+		);
+
+		for (let frame = 0; frame <= frameCount; frame++) {
+			const progress = frame / frameCount;
+			const progressLine = line.replaceAll(
+				XTermAdapter.BIOS_PROGRESS_TOKEN,
+				this.createBiosProgressBar(progress),
+			);
+
+			await this.writeXterm(`\r${progressLine}`);
+			this.updateTerminalText();
+
+			if (frame < frameCount) {
+				await this.sleep(XTermAdapter.BIOS_PROGRESS_FRAME_MS);
+			}
+		}
+
+		const completedLine = line.replaceAll(
+			XTermAdapter.BIOS_PROGRESS_TOKEN,
+			this.createBiosProgressBar(1),
+		);
+		this.outputBuffer += `${completedLine}\n`;
+		await this.writeXterm("\r\n");
+		this.updateTerminalText();
+	}
+
+	private createBiosProgressBar(progress: number): string {
+		const clampedProgress = Math.max(0, Math.min(1, progress));
+		const completedBlocks = Math.round(
+			clampedProgress * XTermAdapter.BIOS_PROGRESS_BAR_WIDTH,
+		);
+		const remainingBlocks =
+			XTermAdapter.BIOS_PROGRESS_BAR_WIDTH - completedBlocks;
+		const percent = Math.round(clampedProgress * 100)
+			.toString()
+			.padStart(3, " ");
+
+		return `[${"▓".repeat(completedBlocks)}${" ".repeat(remainingBlocks)}] ${percent}%`;
 	}
 
 	/**
@@ -771,7 +830,7 @@ export class XTermAdapter {
 			}
 		}
 		// Fallback
-		return "guest@remojansen.com ~ $ ";
+		return "guest@burmister.com:~$ ";
 	}
 
 	/**

@@ -1,11 +1,13 @@
 {
-	"name": "cool-retro-term-webgl",
+	"name": "burmister-com",
 	"version": "1.0.0",
-	"description": "A WebGL-based CRT terminal renderer for XTerm.js with authentic retro effects",
+	"description": "Adam Burmister's retro terminal CV and portfolio website",
 	"type": "module",
 	"scripts": {
-		"build": "tsup --minify",
-		"dev": "concurrently \"tsup --watch\" \"http-server -p 8080 -c-1\"",
+		"build": "astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"deploy": "wrangler deploy",
 		"lint-and-format": "npx @biomejs/biome check --write --unsafe",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -18,18 +20,22 @@
 		"three.js",
 		"cool-retro-term"
 	],
-	"author": "Remo H. Jansen",
+	"author": "Adam Burmister",
 	"license": "GPL-3.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/remojansen/remojansen.github.io"
+		"url": "https://github.com/aburmister/burmister.com"
 	},
 	"devDependencies": {
+		"@astrojs/cloudflare": "^12.6.5",
+		"@astrojs/sitemap": "^3.6.0",
+		"@biomejs/biome": "^2.3.10",
 		"@types/three": "^0.182.0",
-		"concurrently": "^9.2.1",
-		"http-server": "^14.1.1",
-		"tsup": "^8.3.5",
-		"typescript": "^5.7.2"
+		"astro": "^5.15.4",
+		"node-addon-api": "^8.5.0",
+		"node-gyp": "^12.1.0",
+		"typescript": "^5.7.2",
+		"wrangler": "^4.40.2"
 	},
 	"dependencies": {
 		"@types/stats.js": "^0.17.4",

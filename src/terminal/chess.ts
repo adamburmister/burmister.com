@@ -32,7 +32,7 @@ function startChessMusic(): void {
 			backgroundMusic.pause();
 			backgroundMusic = null;
 		}
-		backgroundMusic = new Audio("assets/audio/chill-game.mp3");
+		backgroundMusic = new Audio("/assets/audio/chill-game.mp3");
 		backgroundMusic.loop = true;
 		backgroundMusic.volume = 0.3;
 		backgroundMusic.play().catch(() => {

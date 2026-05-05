@@ -34,8 +34,8 @@ function getAudioContext(): AudioContext {
  * Map of music files in the Music directory to actual asset URLs
  */
 export const musicFiles: Map<string, string> = new Map([
-	["Music/arcade.mp3", "assets/audio/game.mp3"],
-	["Music/chill.mp3", "assets/audio/chill-game.mp3"],
+	["Music/arcade.mp3", "/assets/audio/game.mp3"],
+	["Music/chill.mp3", "/assets/audio/chill-game.mp3"],
 ]);
 
 /**

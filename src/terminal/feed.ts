@@ -497,12 +497,12 @@ export async function feedCommand(ctx: CommandContext): Promise<void> {
 
 	// Show loading message
 	ctx.terminal.clear();
-	ctx.terminal.writeln("Loading feed from dev.to/remojansen...");
+	ctx.terminal.writeln("Loading feed from dev.to...");
 
 	// Fetch the feed
 	try {
 		// Use a CORS proxy or fetch directly if allowed
-		const feedUrl = "https://dev.to/feed/remojansen";
+		const feedUrl = "https://dev.to/feed/aburmister";
 		const response = await fetch(feedUrl);
 
 		if (!response.ok) {
@@ -522,7 +522,7 @@ export async function feedCommand(ctx: CommandContext): Promise<void> {
 		ctx.terminal.writeln(`feed: error loading feed - ${errorMessage}`);
 		ctx.terminal.writeln("");
 		ctx.terminal.writeln("Note: CORS may block direct feed access.");
-		ctx.terminal.writeln("The feed URL is: https://dev.to/feed/remojansen");
+		ctx.terminal.writeln("The feed URL is: https://dev.to/feed/aburmister");
 		ctx.terminal.showCursor?.();
 		return;
 	}

@@ -131,8 +131,8 @@ export async function accessCommand(ctx: CommandContext): Promise<void> {
 	// Determine which video to play based on password
 	const videoUrl =
 		password === "please"
-			? "assets/video/gotcha.webm"
-			: "assets/video/magic-word.webm";
+			? "/assets/video/gotcha.webm"
+			: "/assets/video/magic-word.webm";
 
 	// Hide cursor during playback
 	ctx.terminal.hideCursor?.();

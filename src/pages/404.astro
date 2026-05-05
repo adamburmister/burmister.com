@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+export const prerender = true;
+---
+
+<BaseLayout title="404" canonicalPath="/404">
+	<main class="page">
+		<header>
+			<p class="eyebrow">404</p>
+			<h1>Command not found</h1>
+			<p>The requested page does not exist.</p>
+			<nav>
+				<a href="/">Return to terminal</a>
+				<a href="/resume">Resume</a>
+				<a href="/projects">Projects</a>
+			</nav>
+		</header>
+	</main>
+</BaseLayout>

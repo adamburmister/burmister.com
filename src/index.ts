@@ -1,8 +1,8 @@
 /**
- * Cool Retro Term - Web Application Entry Point
+ * burmister.com - Retro Terminal Entry Point
  *
- * This is the application-specific entry point for remojansen.github.io
- * It uses the cool-retro-term-webgl library and adds:
+ * This is the application-specific entry point for Adam Burmister's personal
+ * portfolio. It uses the cool-retro-term-webgl foundation and adds:
  * - Custom shell emulator with virtual filesystem
  * - Boot sequence with BIOS animation
  * - Background and game music
@@ -45,7 +45,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
 		}
 	};
 
-	audioLoader.load("assets/audio/background.mp3", (loadedBuffer) => {
+	audioLoader.load("/assets/audio/background.mp3", (loadedBuffer) => {
 		bgBuffer = loadedBuffer;
 		backgroundMusic.setBuffer(bgBuffer);
 		backgroundMusic.setLoop(true);
@@ -63,7 +63,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
 	let gameAudioLoaded = false;
 	let gameBuffer: AudioBuffer | null = null;
 
-	audioLoader.load("assets/audio/game.mp3", (loadedBuffer) => {
+	audioLoader.load("/assets/audio/game.mp3", (loadedBuffer) => {
 		gameBuffer = loadedBuffer;
 		gameMusic.setBuffer(gameBuffer);
 		gameMusic.setLoop(true);
@@ -154,12 +154,12 @@ async function runScene(): Promise<void> {
 	const renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(LOGICAL_WIDTH, LOGICAL_HEIGHT);
 	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setClearColor(0x000000);
+	renderer.setClearColor(0x060808);
 	container.appendChild(renderer.domElement);
 
 	// Create the terminal text with logical dimensions
 	const terminalText = new TerminalText(LOGICAL_WIDTH, LOGICAL_HEIGHT);
-	terminalText.setFontColor("0xcccccc");
+	terminalText.setFontColor("0xC0C0C0");
 	terminalText.setAmbientLight(0.2);
 	terminalText.setBloom(0.2);
 	terminalText.setCursorBlinking(true);
@@ -254,7 +254,7 @@ async function runScene(): Promise<void> {
 
 	animate();
 
-	console.log("Cool Retro Term Web initialized");
+	console.log("burmister.com retro terminal initialized");
 }
 
 // Start the application
