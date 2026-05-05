@@ -58,17 +58,10 @@ const DIALER_STEPS: DialerStep[] = [
 ];
 
 const DOOR_GAMES: Record<string, DoorGame> = {
-  "1": { name: "Pong", command: "./pong" },
-  "2": { name: "Snake", command: "./snake" },
-  "3": { name: "Blocks", command: "./blocks" },
-  "4": { name: "Donut", command: "./donut" },
-  "5": { name: "Space Invaders", command: "./space-invaders" },
-  "6": { name: "Arkanoid", command: "./arkanoid" },
-  "7": { name: "Flappy Bird", command: "./flappybird" },
-  "8": { name: "Chess", command: "./chess" },
-  "9": { name: "Minesweeper", command: "./minesweeper" },
-  "10": { name: "Life", command: "./life" },
-  "11": { name: "Memory", command: "./memory" },
+  "1": { name: "Snake", command: "./snake" },
+  "2": { name: "Blocks", command: "./blocks" },
+  "3": { name: "Donut", command: "./donut" },
+  "4": { name: "Chess", command: "./chess" },
 };
 
 export async function dialerCommand(ctx: CommandContext): Promise<void> {

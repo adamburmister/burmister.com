@@ -826,9 +826,6 @@ registerCoreCommand(
   },
 );
 
-// Matrix command - animated matrix effect (runs until Ctrl+C or Q)
-// registerCommand("./matrix", matrixCommand);
-
 // // ============================================
 // // FFPlay - Video Player with CRT Effects
 // // ============================================
