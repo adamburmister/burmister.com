@@ -1,0 +1,20 @@
+[2J[H[38;5;51m+------------------------------------------------------------------------------+[0m
+[38;5;51m|[0m [1;38;5;226mDOOR GAMES[0m [38;5;250m// STATIC PROGRAM LIST[0m                                      [38;5;51m|[0m
+[38;5;51m+------------------------------------------------------------------------------+[0m
+
+[38;5;46m 1[0m  Pong              [38;5;244m./pong[0m
+[38;5;46m 2[0m  Snake             [38;5;244m./snake[0m
+[38;5;46m 3[0m  Blocks            [38;5;244m./blocks[0m
+[38;5;46m 4[0m  Donut             [38;5;244m./donut[0m
+[38;5;46m 5[0m  Space Invaders    [38;5;244m./space-invaders[0m
+[38;5;46m 6[0m  Arkanoid          [38;5;244m./arkanoid[0m
+[38;5;46m 7[0m  Flappy Bird       [38;5;244m./flappybird[0m
+[38;5;46m 8[0m  Chess             [38;5;244m./chess[0m
+[38;5;46m 9[0m  Minesweeper       [38;5;244m./minesweeper[0m
+[38;5;46m10[0m  Life              [38;5;244m./life[0m
+[38;5;46m11[0m  Memory            [38;5;244m./memory[0m
+
+[38;5;196m 0[0m  Return to main menu
+
+[38;5;244mEnter a door number and press ENTER. Games use their own Q-to-quit controls.[0m
+
