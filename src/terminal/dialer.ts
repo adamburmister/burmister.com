@@ -87,6 +87,7 @@ export async function dialerCommand(ctx: CommandContext): Promise<void> {
     ctx.terminal.stopDialupAudio?.();
     ctx.terminal.writeln("");
     await renderAnsiFile(ctx, WELCOME_ANSI_URL);
+    await sleep(1000);
     await runBbsSession(ctx);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

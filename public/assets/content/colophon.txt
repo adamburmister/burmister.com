@@ -1,0 +1,6 @@
+Colophon
+--------
+Original terminal foundation by Remo H. Jansen.
+Original project: https://github.com/remojansen/cool-retro-term-webgl/tree/main
+License: GPL-3.0
+HTML: /colophon

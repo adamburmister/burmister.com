@@ -8,19 +8,17 @@
 
 import { portfolio } from "../data/portfolio";
 // Import game commands from separate modules
-import { accessCommand } from "./access";
 import { arkanoidCommand } from "./arkanoid";
 import { blocksCommand } from "./blocks";
 import { chessCommand } from "./chess";
 import { dialerCommand } from "./dialer";
 import { donutCommand } from "./donut";
-import { feedCommand } from "./feed";
 import { flappyBirdCommand } from "./flappybird";
 import { gameOfLifeCommand } from "./gameoflife";
 import { matrixCommand } from "./matrix";
 import { memoryCommand } from "./memory";
 import { minesweeperCommand } from "./minesweeper";
-import { mpg123Command } from "./mpg123";
+// import { mpg123Command } from "./mpg123";
 import { pongCommand } from "./pong";
 import { snakeCommand } from "./snake";
 import { spaceInvadersCommand } from "./space-invaders";
@@ -222,22 +220,22 @@ function initFileSystem(): void {
     modified: "Dec 24 12:00",
     parent: "",
   });
-  virtualFileSystem.set("Music", {
-    name: "Music",
-    isDirectory: true,
-    size: 4096,
-    permissions: "drwxr-xr-x",
-    modified: "Dec 28 00:00",
-    parent: "",
-  });
-  virtualFileSystem.set("Videos", {
-    name: "Videos",
-    isDirectory: true,
-    size: 4096,
-    permissions: "drwxr-xr-x",
-    modified: "Dec 21 14:20",
-    parent: "",
-  });
+  // virtualFileSystem.set("Music", {
+  //   name: "Music",
+  //   isDirectory: true,
+  //   size: 4096,
+  //   permissions: "drwxr-xr-x",
+  //   modified: "Dec 28 00:00",
+  //   parent: "",
+  // });
+  // virtualFileSystem.set("Videos", {
+  //   name: "Videos",
+  //   isDirectory: true,
+  //   size: 4096,
+  //   permissions: "drwxr-xr-x",
+  //   modified: "Dec 21 14:20",
+  //   parent: "",
+  // });
   virtualFileSystem.set("Programs", {
     name: "Programs",
     isDirectory: true,
@@ -248,39 +246,39 @@ function initFileSystem(): void {
   });
 
   // Files in Music directory
-  virtualFileSystem.set("Music/arcade.mp3", {
-    name: "arcade.mp3",
-    isDirectory: false,
-    size: 3145728, // ~3MB
-    permissions: "-rw-r--r--",
-    modified: "Dec 28 00:00",
-    parent: "Music",
-  });
-  virtualFileSystem.set("Music/chill.mp3", {
-    name: "chill.mp3",
-    isDirectory: false,
-    size: 4194304, // ~4MB
-    permissions: "-rw-r--r--",
-    modified: "Dec 28 00:00",
-    parent: "Music",
-  });
+  // virtualFileSystem.set("Music/arcade.mp3", {
+  //   name: "arcade.mp3",
+  //   isDirectory: false,
+  //   size: 3145728, // ~3MB
+  //   permissions: "-rw-r--r--",
+  //   modified: "Dec 28 00:00",
+  //   parent: "Music",
+  // });
+  // virtualFileSystem.set("Music/chill.mp3", {
+  //   name: "chill.mp3",
+  //   isDirectory: false,
+  //   size: 4194304, // ~4MB
+  //   permissions: "-rw-r--r--",
+  //   modified: "Dec 28 00:00",
+  //   parent: "Music",
+  // });
 
   // Files in Documents directory
-  virtualFileSystem.set("Documents/license.txt", {
-    name: "license.txt",
-    isDirectory: false,
-    size: 35147,
-    permissions: "-rw-r--r--",
-    modified: "Dec 24 12:00",
-    parent: "Documents",
-    content: async () => {
-      const response = await fetch("/assets/content/license.txt");
-      if (!response.ok) {
-        throw new Error("Could not load license file");
-      }
-      return await response.text();
-    },
-  });
+  // virtualFileSystem.set("Documents/license.txt", {
+  //   name: "license.txt",
+  //   isDirectory: false,
+  //   size: 35147,
+  //   permissions: "-rw-r--r--",
+  //   modified: "Dec 24 12:00",
+  //   parent: "Documents",
+  //   content: async () => {
+  //     const response = await fetch("/assets/content/license.txt");
+  //     if (!response.ok) {
+  //       throw new Error("Could not load license file");
+  //     }
+  //     return await response.text();
+  //   },
+  // });
   virtualFileSystem.set("Documents/resume.txt", {
     name: "resume.txt",
     isDirectory: false,
@@ -603,93 +601,98 @@ export function getInitialOutput(): string {
 registerCommand("help", (ctx) => {
   ctx.terminal.writeln("Available commands:");
   ctx.terminal.writeln("  help       - Show this help message");
-  ctx.terminal.writeln("  resume     - Display Adam's resume summary");
-  ctx.terminal.writeln("  cv         - Alias for resume");
-  ctx.terminal.writeln("  projects   - Display selected work");
-  ctx.terminal.writeln("  skills     - Display technical skills");
+  // ctx.terminal.writeln("  resume     - Display Adam's resume summary");
+  ctx.terminal.writeln("  cv         - Display Adam's resume");
+  // ctx.terminal.writeln("  projects   - Display selected work");
+  // ctx.terminal.writeln("  skills     - Display technical skills");
   ctx.terminal.writeln("  contact    - Display contact links");
   ctx.terminal.writeln("  colophon   - Show credits and build notes");
   ctx.terminal.writeln("  clear      - Clear the terminal screen");
   ctx.terminal.writeln("  cd         - Change directory");
   ctx.terminal.writeln("  ls         - List directory contents");
   ctx.terminal.writeln("  cat        - Display file contents");
-  ctx.terminal.writeln("  ffplay     - Play video files");
-  ctx.terminal.writeln("  mpg123     - Play MP3 audio files");
-  ctx.terminal.writeln("  access     - Connect to remote cluster node");
+  // ctx.terminal.writeln("  ffplay     - Play video files");
+  // ctx.terminal.writeln("  mpg123     - Play MP3 audio files");
+  // ctx.terminal.writeln("  access     - Connect to remote cluster node");
   ctx.terminal.writeln("  dialer     - Dial the Burmister BBS");
 });
 
-function writePortfolioHeader(ctx: CommandContext): void {
-  ctx.terminal.writeln(portfolio.name);
-  ctx.terminal.writeln(portfolio.title);
-  ctx.terminal.writeln(portfolio.domain);
-  ctx.terminal.writeln("");
-  ctx.terminal.writeln(portfolio.description);
-  ctx.terminal.writeln("");
-}
+const resumeCommand: CommandHandler = async (ctx) => {
+  try {
+    const response = await fetch("/assets/content/cv.txt");
+    if (!response.ok) {
+      ctx.terminal.writeln("cv: unable to load cv.txt");
+      return;
+    }
 
-const resumeCommand: CommandHandler = (ctx) => {
-  writePortfolioHeader(ctx);
-  ctx.terminal.writeln("Experience");
-  ctx.terminal.writeln("----------");
-  for (const entry of portfolio.experience) {
-    ctx.terminal.writeln(entry.role);
-    ctx.terminal.writeln(
-      `${entry.company} | ${entry.period} | ${entry.location}`,
-    );
-    ctx.terminal.writeln(entry.summary);
-    ctx.terminal.writeln("");
+    const cvText = await response.text();
+    for (const line of cvText.split("\n")) {
+      ctx.terminal.writeln(line);
+    }
+  } catch {
+    ctx.terminal.writeln("cv: unable to load cv.txt");
   }
-  ctx.terminal.writeln(`PDF: ${portfolio.resumePdfPath}`);
-  ctx.terminal.writeln("HTML: /resume");
 };
 
-registerCommand("resume", resumeCommand);
+// registerCommand("resume", resumeCommand);
 registerCommand("cv", resumeCommand);
 registerCommand("./cv", resumeCommand);
 
-registerCommand("projects", (ctx) => {
-  ctx.terminal.writeln("Selected work");
-  ctx.terminal.writeln("-------------");
-  for (const project of portfolio.projects) {
-    ctx.terminal.writeln(project.name);
-    ctx.terminal.writeln(project.summary);
-    ctx.terminal.writeln(`Stack: ${project.technologies.join(", ")}`);
-    if (project.url) {
-      ctx.terminal.writeln(`URL: ${project.url}`);
+// registerCommand("projects", (ctx) => {
+//   ctx.terminal.writeln("Selected work");
+//   ctx.terminal.writeln("-------------");
+//   for (const project of portfolio.projects) {
+//     ctx.terminal.writeln(project.name);
+//     ctx.terminal.writeln(project.summary);
+//     ctx.terminal.writeln(`Stack: ${project.technologies.join(", ")}`);
+//     if (project.url) {
+//       ctx.terminal.writeln(`URL: ${project.url}`);
+//     }
+//     ctx.terminal.writeln("");
+//   }
+//   ctx.terminal.writeln("HTML: /projects");
+// });
+
+// registerCommand("skills", (ctx) => {
+//   ctx.terminal.writeln("Skills");
+//   ctx.terminal.writeln("------");
+//   for (const skill of portfolio.skills) {
+//     ctx.terminal.writeln(`- ${skill}`);
+//   }
+// });
+
+registerCommand("contact", async (ctx) => {
+  try {
+    const response = await fetch("/assets/content/contact.txt");
+    if (!response.ok) {
+      ctx.terminal.writeln("contact: unable to load contact.txt");
+      return;
     }
-    ctx.terminal.writeln("");
-  }
-  ctx.terminal.writeln("HTML: /projects");
-});
 
-registerCommand("skills", (ctx) => {
-  ctx.terminal.writeln("Skills");
-  ctx.terminal.writeln("------");
-  for (const skill of portfolio.skills) {
-    ctx.terminal.writeln(`- ${skill}`);
+    const contactText = await response.text();
+    for (const line of contactText.split("\n")) {
+      ctx.terminal.writeln(line);
+    }
+  } catch {
+    ctx.terminal.writeln("contact: unable to load contact.txt");
   }
 });
 
-registerCommand("contact", (ctx) => {
-  ctx.terminal.writeln("Contact");
-  ctx.terminal.writeln("-------");
-  for (const link of portfolio.social) {
-    ctx.terminal.writeln(`${link.label}: ${link.url}`);
-  }
-});
+registerCommand("colophon", async (ctx) => {
+  try {
+    const response = await fetch("/assets/content/colophon.txt");
+    if (!response.ok) {
+      ctx.terminal.writeln("colophon: unable to load colophon.txt");
+      return;
+    }
 
-registerCommand("colophon", (ctx) => {
-  ctx.terminal.writeln("Colophon");
-  ctx.terminal.writeln("--------");
-  ctx.terminal.writeln(
-    `Original terminal foundation by ${portfolio.colophon.originalAuthor}.`,
-  );
-  ctx.terminal.writeln(
-    `Original project: ${portfolio.colophon.originalProjectUrl}`,
-  );
-  ctx.terminal.writeln(`License: ${portfolio.colophon.license}`);
-  ctx.terminal.writeln("HTML: /colophon");
+    const colophonText = await response.text();
+    for (const line of colophonText.split("\n")) {
+      ctx.terminal.writeln(line);
+    }
+  } catch {
+    ctx.terminal.writeln("colophon: unable to load colophon.txt");
+  }
 });
 
 // CD command - change directory
@@ -879,199 +882,199 @@ registerCommand("cat", async (ctx) => {
 // Matrix command - animated matrix effect (runs until Ctrl+C or Q)
 registerCommand("./matrix", matrixCommand);
 
-// ============================================
-// FFPlay - Video Player with CRT Effects
-// ============================================
+// // ============================================
+// // FFPlay - Video Player with CRT Effects
+// // ============================================
 
-/**
- * Map of video files to their actual URLs
- */
-const videoFiles: Map<string, string> = new Map();
+// /**
+//  * Map of video files to their actual URLs
+//  */
+// const videoFiles: Map<string, string> = new Map();
 
-/**
- * ffplay command - play video files with CRT effects
- */
-registerCommand("ffplay", async (ctx) => {
-  // Check if video playback is supported
-  if (!ctx.terminal.playVideo || !ctx.terminal.stopVideo) {
-    ctx.terminal.writeln("ffplay: error - video playback not supported");
-    return;
-  }
+// /**
+//  * ffplay command - play video files with CRT effects
+//  */
+// registerCommand("ffplay", async (ctx) => {
+//   // Check if video playback is supported
+//   if (!ctx.terminal.playVideo || !ctx.terminal.stopVideo) {
+//     ctx.terminal.writeln("ffplay: error - video playback not supported");
+//     return;
+//   }
 
-  // Check for arguments
-  if (ctx.args.length < 2) {
-    ctx.terminal.writeln("ffplay: missing file operand");
-    ctx.terminal.writeln("Usage: ffplay <filename>");
-    return;
-  }
+//   // Check for arguments
+//   if (ctx.args.length < 2) {
+//     ctx.terminal.writeln("ffplay: missing file operand");
+//     ctx.terminal.writeln("Usage: ffplay <filename>");
+//     return;
+//   }
 
-  const inputPath = ctx.args[1];
-  const resolvedPath = resolvePath(inputPath);
+//   const inputPath = ctx.args[1];
+//   const resolvedPath = resolvePath(inputPath);
 
-  // Check if file exists in virtual filesystem
-  const file = virtualFileSystem.get(resolvedPath);
-  if (!file) {
-    ctx.terminal.writeln(`ffplay: ${inputPath}: No such file or directory`);
-    return;
-  }
+//   // Check if file exists in virtual filesystem
+//   const file = virtualFileSystem.get(resolvedPath);
+//   if (!file) {
+//     ctx.terminal.writeln(`ffplay: ${inputPath}: No such file or directory`);
+//     return;
+//   }
 
-  // Check if it's a video file
-  const videoUrl = videoFiles.get(resolvedPath);
-  if (!videoUrl) {
-    ctx.terminal.writeln(`ffplay: ${inputPath}: Not a supported video format`);
-    return;
-  }
+//   // Check if it's a video file
+//   const videoUrl = videoFiles.get(resolvedPath);
+//   if (!videoUrl) {
+//     ctx.terminal.writeln(`ffplay: ${inputPath}: Not a supported video format`);
+//     return;
+//   }
 
-  // Check if key handler is available for stop control
-  if (!ctx.terminal.setKeyHandler || !ctx.terminal.clearKeyHandler) {
-    ctx.terminal.writeln(
-      "ffplay: error - terminal does not support input capture",
-    );
-    return;
-  }
+//   // Check if key handler is available for stop control
+//   if (!ctx.terminal.setKeyHandler || !ctx.terminal.clearKeyHandler) {
+//     ctx.terminal.writeln(
+//       "ffplay: error - terminal does not support input capture",
+//     );
+//     return;
+//   }
 
-  // Show instructions and wait for Enter to start
-  ctx.terminal.writeln(`Playing: ${inputPath}`);
-  ctx.terminal.writeln("");
-  ctx.terminal.writeln("Controls:");
-  ctx.terminal.writeln("  SPACE    - Pause/Resume");
-  ctx.terminal.writeln("  F        - Forward 10 seconds");
-  ctx.terminal.writeln("  B        - Backward 10 seconds");
-  ctx.terminal.writeln("  Q / ESC  - Stop playback");
-  ctx.terminal.writeln("");
-  ctx.terminal.writeln("Press ENTER to start playback...");
+//   // Show instructions and wait for Enter to start
+//   ctx.terminal.writeln(`Playing: ${inputPath}`);
+//   ctx.terminal.writeln("");
+//   ctx.terminal.writeln("Controls:");
+//   ctx.terminal.writeln("  SPACE    - Pause/Resume");
+//   ctx.terminal.writeln("  F        - Forward 10 seconds");
+//   ctx.terminal.writeln("  B        - Backward 10 seconds");
+//   ctx.terminal.writeln("  Q / ESC  - Stop playback");
+//   ctx.terminal.writeln("");
+//   ctx.terminal.writeln("Press ENTER to start playback...");
 
-  // Wait for Enter key
-  let _startConfirmed = false;
-  let cancelled = false;
+//   // Wait for Enter key
+//   let _startConfirmed = false;
+//   let cancelled = false;
 
-  // Store reference to setKeyHandler before entering Promise (already validated above)
-  const setKeyHandler = ctx.terminal.setKeyHandler;
+//   // Store reference to setKeyHandler before entering Promise (already validated above)
+//   const setKeyHandler = ctx.terminal.setKeyHandler;
 
-  const waitForEnter = new Promise<void>((resolve) => {
-    const enterHandler: KeyHandler = (
-      key: string,
-      keyCode: number,
-      eventType: "keydown" | "keyup",
-    ) => {
-      if (eventType !== "keydown") return;
+//   const waitForEnter = new Promise<void>((resolve) => {
+//     const enterHandler: KeyHandler = (
+//       key: string,
+//       keyCode: number,
+//       eventType: "keydown" | "keyup",
+//     ) => {
+//       if (eventType !== "keydown") return;
 
-      // Enter to start
-      if (key === "Enter" || keyCode === 13) {
-        _startConfirmed = true;
-        ctx.terminal.clearKeyHandler?.();
-        resolve();
-      }
-      // Q or Escape to cancel
-      if (
-        key === "q" ||
-        key === "Q" ||
-        keyCode === 81 ||
-        key === "Escape" ||
-        keyCode === 27
-      ) {
-        cancelled = true;
-        ctx.terminal.clearKeyHandler?.();
-        resolve();
-      }
-    };
+//       // Enter to start
+//       if (key === "Enter" || keyCode === 13) {
+//         _startConfirmed = true;
+//         ctx.terminal.clearKeyHandler?.();
+//         resolve();
+//       }
+//       // Q or Escape to cancel
+//       if (
+//         key === "q" ||
+//         key === "Q" ||
+//         keyCode === 81 ||
+//         key === "Escape" ||
+//         keyCode === 27
+//       ) {
+//         cancelled = true;
+//         ctx.terminal.clearKeyHandler?.();
+//         resolve();
+//       }
+//     };
 
-    setKeyHandler(enterHandler);
-  });
+//     setKeyHandler(enterHandler);
+//   });
 
-  await waitForEnter;
+//   await waitForEnter;
 
-  if (cancelled) {
-    ctx.terminal.writeln("");
-    ctx.terminal.writeln("Playback cancelled.");
-    return;
-  }
+//   if (cancelled) {
+//     ctx.terminal.writeln("");
+//     ctx.terminal.writeln("Playback cancelled.");
+//     return;
+//   }
 
-  // Hide cursor during playback
-  if (ctx.terminal.hideCursor) {
-    ctx.terminal.hideCursor();
-  }
+//   // Hide cursor during playback
+//   if (ctx.terminal.hideCursor) {
+//     ctx.terminal.hideCursor();
+//   }
 
-  // Clear terminal for video display
-  ctx.terminal.clear();
+//   // Clear terminal for video display
+//   ctx.terminal.clear();
 
-  let stopped = false;
+//   let stopped = false;
 
-  // Set up key handler to stop video
-  const keyHandler: KeyHandler = (
-    key: string,
-    keyCode: number,
-    eventType: "keydown" | "keyup",
-    ctrlKey?: boolean,
-  ) => {
-    if (eventType !== "keydown") return;
+//   // Set up key handler to stop video
+//   const keyHandler: KeyHandler = (
+//     key: string,
+//     keyCode: number,
+//     eventType: "keydown" | "keyup",
+//     ctrlKey?: boolean,
+//   ) => {
+//     if (eventType !== "keydown") return;
 
-    // Q to quit
-    if (key === "q" || key === "Q" || keyCode === 81) {
-      stopped = true;
-      ctx.terminal.stopVideo?.();
-    }
-    // Escape to quit
-    if (key === "Escape" || keyCode === 27) {
-      stopped = true;
-      ctx.terminal.stopVideo?.();
-    }
-    // Ctrl+C to quit
-    if ((key === "c" || key === "C") && ctrlKey) {
-      stopped = true;
-      ctx.terminal.stopVideo?.();
-    }
-    // Space to pause/play
-    if (key === " " || keyCode === 32) {
-      const video = ctx.terminal.getVideoElement?.();
-      if (video) {
-        if (video.paused) {
-          video.play();
-        } else {
-          video.pause();
-        }
-      }
-    }
-    // F to forward 10 seconds
-    if (key === "f" || key === "F" || keyCode === 70) {
-      const video = ctx.terminal.getVideoElement?.();
-      if (video) {
-        video.currentTime = Math.min(video.currentTime + 10, video.duration);
-      }
-    }
-    // B to backward 10 seconds
-    if (key === "b" || key === "B" || keyCode === 66) {
-      const video = ctx.terminal.getVideoElement?.();
-      if (video) {
-        video.currentTime = Math.max(video.currentTime - 10, 0);
-      }
-    }
-  };
+//     // Q to quit
+//     if (key === "q" || key === "Q" || keyCode === 81) {
+//       stopped = true;
+//       ctx.terminal.stopVideo?.();
+//     }
+//     // Escape to quit
+//     if (key === "Escape" || keyCode === 27) {
+//       stopped = true;
+//       ctx.terminal.stopVideo?.();
+//     }
+//     // Ctrl+C to quit
+//     if ((key === "c" || key === "C") && ctrlKey) {
+//       stopped = true;
+//       ctx.terminal.stopVideo?.();
+//     }
+//     // Space to pause/play
+//     if (key === " " || keyCode === 32) {
+//       const video = ctx.terminal.getVideoElement?.();
+//       if (video) {
+//         if (video.paused) {
+//           video.play();
+//         } else {
+//           video.pause();
+//         }
+//       }
+//     }
+//     // F to forward 10 seconds
+//     if (key === "f" || key === "F" || keyCode === 70) {
+//       const video = ctx.terminal.getVideoElement?.();
+//       if (video) {
+//         video.currentTime = Math.min(video.currentTime + 10, video.duration);
+//       }
+//     }
+//     // B to backward 10 seconds
+//     if (key === "b" || key === "B" || keyCode === 66) {
+//       const video = ctx.terminal.getVideoElement?.();
+//       if (video) {
+//         video.currentTime = Math.max(video.currentTime - 10, 0);
+//       }
+//     }
+//   };
 
-  ctx.terminal.setKeyHandler(keyHandler);
+//   ctx.terminal.setKeyHandler(keyHandler);
 
-  try {
-    // Play the video
-    await ctx.terminal.playVideo(videoUrl);
-  } catch (error) {
-    if (!stopped) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      ctx.terminal.writeln(`ffplay: error playing video: ${errorMessage}`);
-    }
-  }
+//   try {
+//     // Play the video
+//     await ctx.terminal.playVideo(videoUrl);
+//   } catch (error) {
+//     if (!stopped) {
+//       const errorMessage =
+//         error instanceof Error ? error.message : String(error);
+//       ctx.terminal.writeln(`ffplay: error playing video: ${errorMessage}`);
+//     }
+//   }
 
-  // Clean up
-  ctx.terminal.clearKeyHandler();
-  if (ctx.terminal.showCursor) {
-    ctx.terminal.showCursor();
-  }
+//   // Clean up
+//   ctx.terminal.clearKeyHandler();
+//   if (ctx.terminal.showCursor) {
+//     ctx.terminal.showCursor();
+//   }
 
-  if (!stopped) {
-    ctx.terminal.writeln("");
-    ctx.terminal.writeln("Playback finished.");
-  }
-});
+//   if (!stopped) {
+//     ctx.terminal.writeln("");
+//     ctx.terminal.writeln("Playback finished.");
+//   }
+// });
 
 // ============================================
 // Game Commands (imported from separate modules)
@@ -1111,13 +1114,13 @@ registerCommand("./life", gameOfLifeCommand);
 registerCommand("./memory", memoryCommand);
 
 // Feed - dev.to RSS feed reader
-registerCommand("./feed", feedCommand);
+// registerCommand("./feed", feedCommand);
 
 // mpg123 - MP3 audio player with visual equalizer
-registerCommand("mpg123", mpg123Command);
+// registerCommand("mpg123", mpg123Command);
 
 // access - Easter egg command (Jurassic Park reference)
-registerCommand("access", accessCommand);
+// registerCommand("access", accessCommand);
 
 // dialer - BBS dial-up connection sequence
 registerCommand("dialer", dialerCommand);
