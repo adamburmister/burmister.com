@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://burmister.com/sitemap-index.xml
