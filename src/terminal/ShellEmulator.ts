@@ -6,22 +6,23 @@
  * progressively before returning control to the terminal.
  */
 
-import { portfolio } from "../data/portfolio";
 // Import game commands from separate modules
-import { arkanoidCommand } from "./arkanoid";
+// import { arkanoidCommand } from "./arkanoid";
 import { blocksCommand } from "./blocks";
 import { chessCommand } from "./chess";
+import { colophonCommand } from "./colophon";
+import { cvCommand } from "./cv";
 import { dialerCommand } from "./dialer";
 import { donutCommand } from "./donut";
-import { flappyBirdCommand } from "./flappybird";
-import { gameOfLifeCommand } from "./gameoflife";
-import { matrixCommand } from "./matrix";
-import { memoryCommand } from "./memory";
-import { minesweeperCommand } from "./minesweeper";
+// import { flappyBirdCommand } from "./flappybird";
+// import { gameOfLifeCommand } from "./gameoflife";
+// import { matrixCommand } from "./matrix";
+// import { memoryCommand } from "./memory";
+// import { minesweeperCommand } from "./minesweeper";
 // import { mpg123Command } from "./mpg123";
-import { pongCommand } from "./pong";
+// import { pongCommand } from "./pong";
 import { snakeCommand } from "./snake";
-import { spaceInvadersCommand } from "./space-invaders";
+// import { spaceInvadersCommand } from "./space-invaders";
 
 /**
  * Key handler function type for games and interactive apps
@@ -35,6 +36,10 @@ export type KeyHandler = (
   ctrlKey?: boolean,
 ) => void;
 
+export interface KeyHandlerOptions {
+  allowScroll?: boolean;
+}
+
 /**
  * Terminal interface - allows commands to interact with the terminal
  */
@@ -46,7 +51,7 @@ export interface TerminalIO {
   /** Clear the terminal screen */
   clear(): void;
   /** Set a key handler for capturing raw keyboard input (for games) */
-  setKeyHandler?(handler: KeyHandler): void;
+  setKeyHandler?(handler: KeyHandler, options?: KeyHandlerOptions): void;
   /** Clear the key handler */
   clearKeyHandler?(): void;
   /** Hide the cursor (for games/full-screen apps) */
@@ -210,12 +215,12 @@ function isValidDirectory(path: string): boolean {
  */
 function initFileSystem(): void {
   // Root level directories
-  virtualFileSystem.set("Documents", {
-    name: "Documents",
+  virtualFileSystem.set("docs", {
+    name: "docs",
     isDirectory: true,
     size: 4096,
     permissions: "drwxr-xr-x",
-    modified: "Dec 24 12:00",
+    modified: "Dec 10 12:00",
     parent: "",
   });
   // virtualFileSystem.set("Music", {
@@ -234,12 +239,12 @@ function initFileSystem(): void {
   //   modified: "Dec 21 14:20",
   //   parent: "",
   // });
-  virtualFileSystem.set("Programs", {
-    name: "Programs",
+  virtualFileSystem.set("bin", {
+    name: "bin",
     isDirectory: true,
     size: 4096,
     permissions: "drwxr-xr-x",
-    modified: "Dec 25 00:00",
+    modified: "May 06 07:46",
     parent: "",
   });
 
@@ -261,14 +266,14 @@ function initFileSystem(): void {
   //   parent: "Music",
   // });
 
-  // Files in Documents directory
-  // virtualFileSystem.set("Documents/license.txt", {
+  // Files in docs directory
+  // virtualFileSystem.set("docs/license.txt", {
   //   name: "license.txt",
   //   isDirectory: false,
   //   size: 35147,
   //   permissions: "-rw-r--r--",
   //   modified: "Dec 24 12:00",
-  //   parent: "Documents",
+  //   parent: "docs",
   //   content: async () => {
   //     const response = await fetch("/assets/content/license.txt");
   //     if (!response.ok) {
@@ -277,138 +282,150 @@ function initFileSystem(): void {
   //     return await response.text();
   //   },
   // });
-  virtualFileSystem.set("Documents/resume.txt", {
+  virtualFileSystem.set("docs/resume.txt", {
     name: "resume.txt",
     isDirectory: false,
-    size: 2048,
+    size: 255,
     permissions: "-rw-r--r--",
-    modified: "Dec 25 00:00",
-    parent: "Documents",
-    content: `${portfolio.name}
-${portfolio.title}
-${portfolio.domain}
-
-${portfolio.description}
-
-Resume PDF: ${portfolio.resumePdfPath}
-Resume HTML: /resume
-Projects: /projects
-`,
+    modified: "Dec 10 00:00",
+    parent: "docs",
+    content: async () => {
+      const response = await fetch("/assets/content/resume.txt");
+      if (!response.ok) {
+        throw new Error("Could not load resume file");
+      }
+      return await response.text();
+    },
+  });
+  virtualFileSystem.set("docs/colophon.txt", {
+    name: "colophon.txt",
+    isDirectory: false,
+    size: 178,
+    permissions: "-rw-r--r--",
+    modified: "May 06 07:27",
+    parent: "docs",
+    content: async () => {
+      const response = await fetch("/assets/content/colophon.txt");
+      if (!response.ok) {
+        throw new Error("Could not load colophon file");
+      }
+      return await response.text();
+    },
   });
 
-  // Files in Programs directory
-  virtualFileSystem.set("Programs/cv", {
+  // Files in bin directory
+  virtualFileSystem.set("bin/cv", {
     name: "cv",
     isDirectory: false,
     size: 8192,
     permissions: "-rwxr-xr-x",
     modified: "Dec 25 00:00",
-    parent: "Programs",
+    parent: "bin",
   });
-  virtualFileSystem.set("Programs/pong", {
-    name: "pong",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 25 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/snake", {
+  // virtualFileSystem.set("bin/pong", {
+  //   name: "pong",
+  //   isDirectory: false,
+  //   size: 4096,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 25 00:00",
+  //   parent: "bin",
+  // });
+  virtualFileSystem.set("bin/snake", {
     name: "snake",
     isDirectory: false,
     size: 4096,
     permissions: "-rwxr-xr-x",
     modified: "Dec 25 00:00",
-    parent: "Programs",
+    parent: "bin",
   });
-  virtualFileSystem.set("Programs/blocks", {
+  virtualFileSystem.set("bin/blocks", {
     name: "blocks",
     isDirectory: false,
     size: 8192,
     permissions: "-rwxr-xr-x",
     modified: "Dec 25 00:00",
-    parent: "Programs",
+    parent: "bin",
   });
-  virtualFileSystem.set("Programs/matrix", {
-    name: "matrix",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 25 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/donut", {
+  // virtualFileSystem.set("bin/matrix", {
+  //   name: "matrix",
+  //   isDirectory: false,
+  //   size: 4096,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 25 00:00",
+  //   parent: "bin",
+  // });
+  virtualFileSystem.set("bin/donut", {
     name: "donut",
     isDirectory: false,
     size: 4096,
     permissions: "-rwxr-xr-x",
     modified: "Dec 27 00:00",
-    parent: "Programs",
+    parent: "bin",
   });
-  virtualFileSystem.set("Programs/space-invaders", {
-    name: "space-invaders",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 27 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/arkanoid", {
-    name: "arkanoid",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 27 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/flappybird", {
-    name: "flappybird",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 27 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/chess", {
+  // virtualFileSystem.set("bin/space-invaders", {
+  //   name: "space-invaders",
+  //   isDirectory: false,
+  //   size: 8192,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 27 00:00",
+  //   parent: "bin",
+  // });
+  // virtualFileSystem.set("bin/arkanoid", {
+  //   name: "arkanoid",
+  //   isDirectory: false,
+  //   size: 8192,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 27 00:00",
+  //   parent: "bin",
+  // });
+  // virtualFileSystem.set("bin/flappybird", {
+  //   name: "flappybird",
+  //   isDirectory: false,
+  //   size: 4096,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 27 00:00",
+  //   parent: "bin",
+  // });
+  virtualFileSystem.set("bin/chess", {
     name: "chess",
     isDirectory: false,
     size: 16384,
     permissions: "-rwxr-xr-x",
     modified: "Dec 27 00:00",
-    parent: "Programs",
+    parent: "bin",
   });
-  virtualFileSystem.set("Programs/minesweeper", {
-    name: "minesweeper",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 28 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/life", {
-    name: "life",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 28 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/memory", {
-    name: "memory",
-    isDirectory: false,
-    size: 8192,
-    permissions: "-rwxr-xr-x",
-    modified: "Dec 28 00:00",
-    parent: "Programs",
-  });
-  virtualFileSystem.set("Programs/feed", {
-    name: "feed",
-    isDirectory: false,
-    size: 4096,
-    permissions: "-rwxr-xr-x",
-    modified: "Jan 29 00:00",
-    parent: "Programs",
-  });
+  // virtualFileSystem.set("bin/minesweeper", {
+  //   name: "minesweeper",
+  //   isDirectory: false,
+  //   size: 8192,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 28 00:00",
+  //   parent: "bin",
+  // });
+  // virtualFileSystem.set("bin/life", {
+  //   name: "life",
+  //   isDirectory: false,
+  //   size: 8192,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 28 00:00",
+  //   parent: "bin",
+  // });
+  // virtualFileSystem.set("bin/memory", {
+  //   name: "memory",
+  //   isDirectory: false,
+  //   size: 8192,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Dec 28 00:00",
+  //   parent: "bin",
+  // });
+  // virtualFileSystem.set("bin/feed", {
+  //   name: "feed",
+  //   isDirectory: false,
+  //   size: 4096,
+  //   permissions: "-rwxr-xr-x",
+  //   modified: "Jan 29 00:00",
+  //   parent: "bin",
+  // });
 }
 
 // Initialize the file system
@@ -523,7 +540,7 @@ export async function runCommand(
 
   // Check if this is a path-based command (starts with ./)
   if (args[0].startsWith("./")) {
-    // Extract the path after ./ using original case (e.g., "./Programs/blocks" -> "Programs/blocks")
+    // Extract the path after ./ using original case (e.g., "./bin/blocks" -> "bin/blocks")
     const pathAfterDotSlash = args[0].slice(2);
 
     // Resolve the full path to check if the file exists
@@ -603,7 +620,7 @@ registerCommand("help", (ctx) => {
   ctx.terminal.writeln("  cv         - Display Adam's resume");
   // ctx.terminal.writeln("  projects   - Display selected work");
   // ctx.terminal.writeln("  skills     - Display technical skills");
-  ctx.terminal.writeln("  contact    - Display contact links");
+  // ctx.terminal.writeln("  contact    - Display contact links");
   ctx.terminal.writeln("  colophon   - Show credits and build notes");
   ctx.terminal.writeln("  clear      - Clear the terminal screen");
   ctx.terminal.writeln("  cd         - Change directory");
@@ -615,26 +632,8 @@ registerCommand("help", (ctx) => {
   ctx.terminal.writeln("  dialer     - Dial the Burmister BBS");
 });
 
-const resumeCommand: CommandHandler = async (ctx) => {
-  try {
-    const response = await fetch("/assets/content/cv.txt");
-    if (!response.ok) {
-      ctx.terminal.writeln("cv: unable to load cv.txt");
-      return;
-    }
-
-    const cvText = await response.text();
-    for (const line of cvText.split("\n")) {
-      ctx.terminal.writeln(line);
-    }
-  } catch {
-    ctx.terminal.writeln("cv: unable to load cv.txt");
-  }
-};
-
-// registerCommand("resume", resumeCommand);
-registerCommand("cv", resumeCommand);
-registerCommand("./cv", resumeCommand);
+// registerCommand("resume", cvCommand);
+// registerCommand("cv", cvCommand);
 
 // registerCommand("projects", (ctx) => {
 //   ctx.terminal.writeln("Selected work");
@@ -659,39 +658,22 @@ registerCommand("./cv", resumeCommand);
 //   }
 // });
 
-registerCommand("contact", async (ctx) => {
-  try {
-    const response = await fetch("/assets/content/contact.txt");
-    if (!response.ok) {
-      ctx.terminal.writeln("contact: unable to load contact.txt");
-      return;
-    }
+// registerCommand("contact", async (ctx) => {
+//   try {
+//     const response = await fetch("/assets/content/contact.txt");
+//     if (!response.ok) {
+//       ctx.terminal.writeln("contact: unable to load contact.txt");
+//       return;
+//     }
 
-    const contactText = await response.text();
-    for (const line of contactText.split("\n")) {
-      ctx.terminal.writeln(line);
-    }
-  } catch {
-    ctx.terminal.writeln("contact: unable to load contact.txt");
-  }
-});
-
-registerCommand("colophon", async (ctx) => {
-  try {
-    const response = await fetch("/assets/content/colophon.txt");
-    if (!response.ok) {
-      ctx.terminal.writeln("colophon: unable to load colophon.txt");
-      return;
-    }
-
-    const colophonText = await response.text();
-    for (const line of colophonText.split("\n")) {
-      ctx.terminal.writeln(line);
-    }
-  } catch {
-    ctx.terminal.writeln("colophon: unable to load colophon.txt");
-  }
-});
+//     const contactText = await response.text();
+//     for (const line of contactText.split("\n")) {
+//       ctx.terminal.writeln(line);
+//     }
+//   } catch {
+//     ctx.terminal.writeln("contact: unable to load contact.txt");
+//   }
+// });
 
 // CD command - change directory
 registerCommand("cd", (ctx) => {
@@ -878,7 +860,7 @@ registerCommand("cat", async (ctx) => {
 });
 
 // Matrix command - animated matrix effect (runs until Ctrl+C or Q)
-registerCommand("./matrix", matrixCommand);
+// registerCommand("./matrix", matrixCommand);
 
 // // ============================================
 // // FFPlay - Video Player with CRT Effects
@@ -1071,11 +1053,11 @@ registerCommand("./matrix", matrixCommand);
 // });
 
 // ============================================
-// Game Commands (imported from separate modules)
+// Bin Commands (imported from separate modules)
 // ============================================
 
 // Pong game - classic arcade game with AI opponent
-registerCommand("./pong", pongCommand);
+// registerCommand("./pong", pongCommand);
 
 // Snake game - classic snake game
 registerCommand("./snake", snakeCommand);
@@ -1087,25 +1069,33 @@ registerCommand("./blocks", blocksCommand);
 registerCommand("./donut", donutCommand);
 
 // Space Invaders - classic alien shooter
-registerCommand("./space-invaders", spaceInvadersCommand);
+// registerCommand("./space-invaders", spaceInvadersCommand);
 
 // Arkanoid - classic brick breaker
-registerCommand("./arkanoid", arkanoidCommand);
+// registerCommand("./arkanoid", arkanoidCommand);
 
 // Flappy Bird - tap to fly through pipes
-registerCommand("./flappybird", flappyBirdCommand);
+// registerCommand("./flappybird", flappyBirdCommand);
 
 // Chess - classic chess with AI opponent
 registerCommand("./chess", chessCommand);
 
 // Minesweeper - classic puzzle game
-registerCommand("./minesweeper", minesweeperCommand);
+// registerCommand("./minesweeper", minesweeperCommand);
 
 // Conway's Game of Life - cellular automaton
-registerCommand("./life", gameOfLifeCommand);
+// registerCommand("./life", gameOfLifeCommand);
 
 // Memory - classic card matching game
-registerCommand("./memory", memoryCommand);
+// registerCommand("./memory", memoryCommand);
+
+// Colophon - show credits and build notes
+registerCommand("./colophon", colophonCommand);
+registerCommand("colophon", colophonCommand); // Global
+
+// CV - display resume content from virtual file system
+registerCommand("./cv", cvCommand);
+registerCommand("cv", cvCommand); // Global
 
 // Feed - dev.to RSS feed reader
 // registerCommand("./feed", feedCommand);
@@ -1117,7 +1107,7 @@ registerCommand("./memory", memoryCommand);
 // registerCommand("access", accessCommand);
 
 // dialer - BBS dial-up connection sequence
-registerCommand("dialer", dialerCommand);
+registerCommand("dialer", dialerCommand); // Global
 
 /**
  * Get tab completions for a partial path
@@ -1153,7 +1143,7 @@ export function getTabCompletions(partialInput: string): {
       let partialName: string;
 
       if (pathAfterDotSlash.includes("/")) {
-        // Path contains directory separator (e.g., "./Programs/te")
+        // Path contains directory separator (e.g., "./bin/te")
         const lastSlash = pathAfterDotSlash.lastIndexOf("/");
         const dirPart = pathAfterDotSlash.slice(0, lastSlash);
         partialName = pathAfterDotSlash.slice(lastSlash + 1);

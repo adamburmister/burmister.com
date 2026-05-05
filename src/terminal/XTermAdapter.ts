@@ -20,6 +20,7 @@ import {
   getInitialOutput,
   getTabCompletions,
   type KeyHandler,
+  type KeyHandlerOptions,
   runCommand,
   type TerminalIO,
 } from "./ShellEmulator";
@@ -60,6 +61,7 @@ export class XTermAdapter {
 
   // Game key handler
   private gameKeyHandler: KeyHandler | null = null;
+  private keyHandlerAllowsScroll: boolean = false;
 
   // Track paste cooldown to prevent rapid repeated pastes
   private lastPasteTime: number = 0;
@@ -296,8 +298,8 @@ export class XTermAdapter {
       container.addEventListener(
         "wheel",
         (event: WheelEvent) => {
-          // Disable scrolling when a game is running
-          if (this.gameKeyHandler) {
+          // Some full-screen commands capture the keyboard and should block scroll.
+          if (this.gameKeyHandler && !this.keyHandlerAllowsScroll) {
             event.preventDefault();
             return;
           }
@@ -647,8 +649,9 @@ export class XTermAdapter {
         this.outputBuffer = "";
         this.updateTerminalText();
       },
-      setKeyHandler: (handler: KeyHandler) => {
+      setKeyHandler: (handler: KeyHandler, options?: KeyHandlerOptions) => {
         this.gameKeyHandler = handler;
+        this.keyHandlerAllowsScroll = options?.allowScroll ?? false;
         // Add global keyboard listener for game input
         this.boundGameKeyboardHandler = (event: KeyboardEvent) => {
           if (this.gameKeyHandler) {
@@ -688,6 +691,7 @@ export class XTermAdapter {
           this.boundGameKeyboardHandler = null;
         }
         this.gameKeyHandler = null;
+        this.keyHandlerAllowsScroll = false;
       },
       hideCursor: () => {
         this.cursorExplicitlyHidden = true;

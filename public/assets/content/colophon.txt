@@ -1,6 +1,21 @@
-Colophon
---------
-Original terminal foundation by Remo H. Jansen.
-Original project: https://github.com/remojansen/cool-retro-term-webgl/tree/main
+
+┏┓  ┓    ┓     
+┃ ┏┓┃┏┓┏┓┣┓┏┓┏┓
+┗┛┗┛┗┗┛┣┛┛┗┗┛┛┗
+       ┛       
+
+This page is heavily inspired by the work of the great
+https://github.com/remojansen Using his great `cool-retro-term-webgl` project
+(https://github.com/remojansen/cool-retro-term-webgl), which is in turn a port
+to WebGL from `cool-retro-term` (https://github.com/Swordfish90/cool-retro-term)
+by Filippo Scognamiglio. 
+
+I have extended this work with colour ANSI support for the terminal as well as a
+mock-BBS UI, as well as some asset optimisations and integration into an Astro
+build and Cloudflare Worker deploy (my preferred light-weight stack).
+
+I've used OpenAI Codex with GPT-5.5 (Medium Intelligence setting) throughout
+development as part of my personal learning of how to integrate AI Agents into
+my creative workflow.
+
 License: GPL-3.0
-HTML: /colophon

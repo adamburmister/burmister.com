@@ -1,0 +1,12 @@
+
+┏━╸╻ ╻┏━┓┏━┓╻┏━╸╻ ╻╻  ╻ ╻┏┳┓   ╻ ╻╻╺┳╸┏━┓┏━╸
+┃  ┃ ┃┣┳┛┣┳┛┃┃  ┃ ┃┃  ┃ ┃┃┃┃   ┃┏┛┃ ┃ ┣━┫┣╸ 
+┗━╸┗━┛╹┗╸╹┗╸╹┗━╸┗━┛┗━╸┗━┛╹ ╹   ┗┛ ╹ ╹ ╹ ╹┗━╸
+
+Hey there! Thanks for being curious, you lil' scamp.
+
+My name's Adam — I'm a Senior Frontend Engineer living in Melbourne, Australia.
+
+I've been doing this sort of UI-building stuff since the final days of the BBS,
+as we migrated from multi-node dialups to The Internet.
+

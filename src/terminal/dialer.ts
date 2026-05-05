@@ -6,10 +6,10 @@ import {
 } from "./ShellEmulator";
 
 const ANSI_LINE_DELAY_MS = 45;
-const WELCOME_ANSI_URL = "/assets/content/bbs/welcome.ans";
-const MENU_ANSI_URL = "/assets/content/bbs/menu.ans";
-const ABOUT_ANSI_URL = "/assets/content/bbs/about.ans";
-const DOORS_ANSI_URL = "/assets/content/bbs/doors.ans";
+const WELCOME_ANSI_URL = "/assets/ansi/welcome.ans";
+const MENU_ANSI_URL = "/assets/ansi/menu.ans";
+const ABOUT_ANSI_URL = "/assets/ansi/about.ans";
+const DOORS_ANSI_URL = "/assets/ansi/doors.ans";
 const RESUME_PDF_URL =
   "/assets/Adam Burmister - Full Stack Engineer - Resume.pdf";
 const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
@@ -117,7 +117,7 @@ async function runDialupSequence(ctx: CommandContext): Promise<void> {
     }
   };
 
-  ctx.terminal.setKeyHandler?.(keyHandler);
+  ctx.terminal.setKeyHandler?.(keyHandler, { allowScroll: true });
 
   try {
     for (const step of DIALER_STEPS) {
@@ -214,7 +214,7 @@ async function showWelcomeGuestbookPost(ctx: CommandContext): Promise<void> {
 }
 
 async function showGuestbook(ctx: CommandContext): Promise<void> {
-  ctx.terminal.write("\x1b[2J\x1b[H");
+  preserveBbsScreenBeforeClear(ctx);
   ctx.terminal.writeln("\x1b[38;5;51mBURMISTER.COM BBS GUESTBOOK\x1b[0m");
   ctx.terminal.writeln("--------------------------------");
   ctx.terminal.writeln("");
@@ -274,7 +274,7 @@ async function showGuestbook(ctx: CommandContext): Promise<void> {
 }
 
 async function downloadResume(ctx: CommandContext): Promise<void> {
-  ctx.terminal.write("\x1b[2J\x1b[H");
+  preserveBbsScreenBeforeClear(ctx);
   ctx.terminal.writeln("\x1b[38;5;226mZMODEM SEND\x1b[0m");
   ctx.terminal.writeln("------------");
   ctx.terminal.writeln("");
@@ -345,7 +345,11 @@ async function renderAnsiFile(
     return;
   }
 
-  const ansi = await response.text();
+  let ansi = await response.text();
+  if (ansi.startsWith("\x1b[2J\x1b[H")) {
+    preserveBbsScreenBeforeClear(ctx);
+    ansi = ansi.slice("\x1b[2J\x1b[H".length);
+  }
   const lines = ansi.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
 
   for (let index = 0; index < lines.length; index++) {
@@ -402,7 +406,7 @@ function readLine(
       }
     };
 
-    ctx.terminal.setKeyHandler?.(keyHandler);
+    ctx.terminal.setKeyHandler?.(keyHandler, { allowScroll: true });
   });
 }
 
@@ -420,8 +424,13 @@ function readAnyKey(ctx: CommandContext, prompt: string): Promise<void> {
       resolve();
     };
 
-    ctx.terminal.setKeyHandler?.(keyHandler);
+    ctx.terminal.setKeyHandler?.(keyHandler, { allowScroll: true });
   });
+}
+
+function preserveBbsScreenBeforeClear(ctx: CommandContext): void {
+  const rows = ctx.terminal.getSize?.().rows ?? 24;
+  ctx.terminal.write(`${"\n".repeat(rows)}\x1b[2J\x1b[H`);
 }
 
 async function sleepUntilSkipped(
