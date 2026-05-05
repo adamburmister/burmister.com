@@ -19,6 +19,8 @@ interface AudioControls {
 	startBackgroundMusic: () => void;
 	startGameMusic: () => void;
 	stopGameMusic: () => void;
+	playDialupAudio: () => Promise<void>;
+	stopDialupAudio: () => void;
 }
 
 // Setup background music with Three.js Audio
@@ -72,6 +74,31 @@ function setupAudio(camera: THREE.Camera): AudioControls {
 		console.log("Game music loaded");
 	});
 
+	// Dial-up connection sound
+	const dialupAudio = new THREE.Audio(listener);
+	let dialupAudioLoaded = false;
+	let dialupBuffer: AudioBuffer | null = null;
+
+	const dialupLoadPromise = new Promise<void>((resolve) => {
+		audioLoader.load(
+			"/assets/audio/dialup.mp3",
+			(loadedBuffer) => {
+				dialupBuffer = loadedBuffer;
+				dialupAudio.setBuffer(dialupBuffer);
+				dialupAudio.setLoop(false);
+				dialupAudio.setVolume(0.75);
+				dialupAudioLoaded = true;
+				console.log("Dial-up audio loaded");
+				resolve();
+			},
+			undefined,
+			(error) => {
+				console.warn("Dial-up audio failed to load", error);
+				resolve();
+			},
+		);
+	});
+
 	return {
 		startBackgroundMusic: () => {
 			bgPlayRequested = true;
@@ -90,6 +117,34 @@ function setupAudio(camera: THREE.Camera): AudioControls {
 			if (gameMusic.isPlaying) {
 				gameMusic.stop();
 				console.log("Game music stopped");
+			}
+		},
+		playDialupAudio: async () => {
+			if (listener.context.state === "suspended") {
+				await listener.context.resume();
+			}
+
+			await dialupLoadPromise;
+			if (!dialupAudioLoaded || !dialupBuffer) {
+				return;
+			}
+
+			if (dialupAudio.isPlaying) {
+				dialupAudio.stop();
+			}
+			dialupAudio.play();
+			console.log("Dial-up audio started");
+
+			await new Promise<void>((resolve) => {
+				window.setTimeout(() => {
+					resolve();
+				}, dialupBuffer.duration * 1000);
+			});
+		},
+		stopDialupAudio: () => {
+			if (dialupAudio.isPlaying) {
+				dialupAudio.stop();
+				console.log("Dial-up audio stopped");
 			}
 		},
 	};

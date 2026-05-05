@@ -12,6 +12,7 @@ import { accessCommand } from "./access";
 import { arkanoidCommand } from "./arkanoid";
 import { blocksCommand } from "./blocks";
 import { chessCommand } from "./chess";
+import { dialerCommand } from "./dialer";
 import { donutCommand } from "./donut";
 import { feedCommand } from "./feed";
 import { flappyBirdCommand } from "./flappybird";
@@ -68,6 +69,10 @@ export interface TerminalIO {
 	startGameMusic?(): void;
 	/** Stop game music */
 	stopGameMusic?(): void;
+	/** Play dial-up connection audio once */
+	playDialupAudio?(): Promise<void>;
+	/** Stop dial-up connection audio */
+	stopDialupAudio?(): void;
 }
 
 /**
@@ -594,6 +599,7 @@ registerCommand("help", (ctx) => {
 	ctx.terminal.writeln("  ffplay     - Play video files");
 	ctx.terminal.writeln("  mpg123     - Play MP3 audio files");
 	ctx.terminal.writeln("  access     - Connect to remote cluster node");
+	ctx.terminal.writeln("  dialer     - Dial the Burmister BBS");
 });
 
 function writePortfolioHeader(ctx: CommandContext): void {
@@ -1095,6 +1101,9 @@ registerCommand("mpg123", mpg123Command);
 
 // access - Easter egg command (Jurassic Park reference)
 registerCommand("access", accessCommand);
+
+// dialer - BBS dial-up connection sequence
+registerCommand("dialer", dialerCommand);
 
 /**
  * Get tab completions for a partial path

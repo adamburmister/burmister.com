@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "include": [
+    "/_server-islands/*",
+    "/_image"
+  ],
+  "exclude": [
+    "/",
+    "/_astro/*",
+    "/.DS_Store",
+    "/llms.txt",
+    "/robots.txt",
+    "/assets/*",
+    "/404",
+    "/colophon",
+    "/projects",
+    "/resume"
+  ]
+}

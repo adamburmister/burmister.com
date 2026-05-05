@@ -13,7 +13,7 @@
  * The output from xterm.js is extracted and rendered through our shaders.
  */
 
-import { Terminal } from "@xterm/xterm";
+import { type IBufferCell, Terminal } from "@xterm/xterm";
 import type { TerminalText } from "cool-retro-term-renderer";
 import { isMobileDevice } from "../utils";
 import {
@@ -23,12 +23,19 @@ import {
 	runCommand,
 	type TerminalIO,
 } from "./ShellEmulator";
+import {
+	type StyledTerminalCell,
+	type StyledTerminalLine,
+	setStyledTerminalText,
+} from "./TerminalTextAnsiColor";
 
 // Audio controls interface
 interface AudioControls {
 	startBackgroundMusic: () => void;
 	startGameMusic: () => void;
 	stopGameMusic: () => void;
+	playDialupAudio: () => Promise<void>;
+	stopDialupAudio: () => void;
 }
 
 export class XTermAdapter {
@@ -731,6 +738,14 @@ export class XTermAdapter {
 					this.audioControls.stopGameMusic();
 				}
 			},
+			playDialupAudio: () => {
+				return this.audioControls?.playDialupAudio() ?? Promise.resolve();
+			},
+			stopDialupAudio: () => {
+				if (this.audioControls) {
+					this.audioControls.stopDialupAudio();
+				}
+			},
 		};
 	}
 
@@ -1009,14 +1024,8 @@ export class XTermAdapter {
 			this.updateTerminalText();
 
 			// Start BIOS sequence
-			this.printBiosSequence().then(() => {
-				this.biosComplete = true;
-				// After BIOS, show the prompt
-				const initialOutput = getInitialOutput();
-				this.outputBuffer += initialOutput;
-				this.xterm.write(initialOutput, () => {
-					this.updateTerminalText();
-				});
+			this.printBiosSequence().then(async () => {
+				await this.autoExecuteDialerCommand();
 			});
 			return;
 		}
@@ -1027,6 +1036,34 @@ export class XTermAdapter {
 		}
 
 		this.executeCommand();
+	}
+
+	private async autoExecuteDialerCommand(): Promise<void> {
+		this.biosComplete = true;
+		this.isCommandRunning = true;
+
+		try {
+			const prompt = getInitialOutput();
+			this.outputBuffer += prompt;
+			await this.writeXterm(prompt);
+			this.updateTerminalText();
+
+			for (const char of "dialer") {
+				this.outputBuffer += char;
+				await this.writeXterm(char);
+				this.updateTerminalText();
+				await this.sleep(75);
+			}
+
+			this.outputBuffer += "\n";
+			await this.writeXterm("\r\n");
+			this.updateTerminalText();
+
+			await runCommand("dialer", this.createTerminalIO());
+		} finally {
+			this.isCommandRunning = false;
+			this.updateTerminalText();
+		}
 	}
 
 	/**
@@ -1239,6 +1276,7 @@ export class XTermAdapter {
 	private updateTerminalText(): void {
 		const buffer = this.xterm.buffer.active;
 		const lines: string[] = [];
+		const styledLines: StyledTerminalLine[] = [];
 
 		// Get the number of lines with content
 		const totalLines = buffer.length;
@@ -1255,17 +1293,24 @@ export class XTermAdapter {
 				const line = buffer.getLine(lineIndex);
 				if (line) {
 					lines.push(line.translateToString(true));
+					const styledLine: StyledTerminalLine = [];
+					for (let col = 0; col < this.xterm.cols; col++) {
+						styledLine.push(this.createStyledTerminalCell(line.getCell(col)));
+					}
+					styledLines.push(styledLine);
 				} else {
 					lines.push("");
+					styledLines.push([]);
 				}
 			} else {
 				lines.push("");
+				styledLines.push([]);
 			}
 		}
 
 		// Update the terminal text renderer with current content
 		const textContent = lines.join("\n");
-		this.terminalText.setText(textContent);
+		setStyledTerminalText(this.terminalText, textContent, styledLines);
 
 		// Check if viewport is scrolled (not showing the current input line)
 		// The cursor's actual line in the buffer is baseY + cursorY
@@ -1290,6 +1335,103 @@ export class XTermAdapter {
 			const cursorRowInViewport = cursorActualLine - viewportStart;
 			this.terminalText.setCursorPosition(cursorCol, cursorRowInViewport);
 		}
+	}
+
+	private createStyledTerminalCell(
+		cell: IBufferCell | undefined,
+	): StyledTerminalCell {
+		if (!cell || cell.isInvisible()) {
+			return {
+				char: "",
+				foreground: null,
+				background: null,
+				bold: false,
+				dim: false,
+				inverse: false,
+			};
+		}
+
+		const foreground = this.decodeCellColor(cell, "foreground");
+		const background = this.decodeCellColor(cell, "background");
+
+		return {
+			char: cell.getChars(),
+			foreground: cell.isInverse() ? background : foreground,
+			background: cell.isInverse() ? foreground : background,
+			bold: Boolean(cell.isBold()),
+			dim: Boolean(cell.isDim()),
+			inverse: Boolean(cell.isInverse()),
+		};
+	}
+
+	private decodeCellColor(
+		cell: IBufferCell,
+		target: "foreground" | "background",
+	): string | null {
+		const isDefault =
+			target === "foreground" ? cell.isFgDefault() : cell.isBgDefault();
+		if (isDefault) {
+			return null;
+		}
+
+		const isRgb = target === "foreground" ? cell.isFgRGB() : cell.isBgRGB();
+		const color =
+			target === "foreground" ? cell.getFgColor() : cell.getBgColor();
+		if (isRgb) {
+			return `#${color.toString(16).padStart(6, "0")}`;
+		}
+
+		return this.decodePaletteColor(color);
+	}
+
+	private decodePaletteColor(index: number): string | null {
+		const ansiPalette = [
+			"#000000",
+			"#aa0000",
+			"#00aa00",
+			"#aa5500",
+			"#0000aa",
+			"#aa00aa",
+			"#00aaaa",
+			"#aaaaaa",
+			"#555555",
+			"#ff5555",
+			"#55ff55",
+			"#ffff55",
+			"#5555ff",
+			"#ff55ff",
+			"#55ffff",
+			"#ffffff",
+		];
+
+		if (index >= 0 && index < ansiPalette.length) {
+			return ansiPalette[index];
+		}
+
+		if (index >= 16 && index <= 231) {
+			const colorIndex = index - 16;
+			const red = Math.floor(colorIndex / 36);
+			const green = Math.floor((colorIndex % 36) / 6);
+			const blue = colorIndex % 6;
+			return this.rgbToHex(
+				red === 0 ? 0 : 55 + red * 40,
+				green === 0 ? 0 : 55 + green * 40,
+				blue === 0 ? 0 : 55 + blue * 40,
+			);
+		}
+
+		if (index >= 232 && index <= 255) {
+			const gray = 8 + (index - 232) * 10;
+			return this.rgbToHex(gray, gray, gray);
+		}
+
+		return null;
+	}
+
+	private rgbToHex(red: number, green: number, blue: number): string {
+		return `#${red.toString(16).padStart(2, "0")}${green
+			.toString(16)
+			.padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`;
 	}
 
 	/**
