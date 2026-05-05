@@ -13,8 +13,9 @@ const DOORS_ANSI_URL = "/assets/content/bbs/doors.ans";
 const RESUME_PDF_URL =
   "/assets/Adam Burmister - Full Stack Engineer - Resume.pdf";
 const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
-const GUESTBOOK_STORAGE_KEY = "burmister-bbs-guestbook";
+const GUESTBOOK_API_URL = "/api/guestbook";
 const MAX_GUESTBOOK_MESSAGE_LENGTH = 160;
+const DIALUP_SKIP_TICK_MS = 50;
 
 interface DialerStep {
   text: string;
@@ -23,8 +24,13 @@ interface DialerStep {
 }
 
 interface GuestbookEntry {
+  id: string;
   message: string;
   createdAt: string;
+}
+
+interface GuestbookListResponse {
+  entries: GuestbookEntry[];
 }
 
 interface DoorGame {
@@ -87,6 +93,7 @@ export async function dialerCommand(ctx: CommandContext): Promise<void> {
     ctx.terminal.stopDialupAudio?.();
     ctx.terminal.writeln("");
     await renderAnsiFile(ctx, WELCOME_ANSI_URL);
+    await showWelcomeGuestbookPost(ctx);
     await readAnyKey(ctx, "\nPress any key to enter the main board...");
     await runBbsSession(ctx);
   } catch (error) {
@@ -103,16 +110,29 @@ async function runDialupSequence(ctx: CommandContext): Promise<void> {
   ctx.terminal.writeln("Burmister BBS Dialer v1.0");
   ctx.terminal.writeln("-------------------------");
 
-  for (const step of DIALER_STEPS) {
-    if (step.inline) {
-      ctx.terminal.write(step.text);
-    } else {
-      ctx.terminal.writeln(step.text);
+  let skipDialupSequence = false;
+  const keyHandler: KeyHandler = (key, eventType) => {
+    if (eventType === "keydown" && key === "Enter") {
+      skipDialupSequence = true;
     }
+  };
 
-    if (step.delayMs > 0) {
-      await sleep(step.delayMs);
+  ctx.terminal.setKeyHandler?.(keyHandler);
+
+  try {
+    for (const step of DIALER_STEPS) {
+      if (step.inline) {
+        ctx.terminal.write(step.text);
+      } else {
+        ctx.terminal.writeln(step.text);
+      }
+
+      if (step.delayMs > 0) {
+        await sleepUntilSkipped(step.delayMs, () => skipDialupSequence);
+      }
     }
+  } finally {
+    ctx.terminal.clearKeyHandler?.();
   }
 }
 
@@ -161,28 +181,67 @@ async function showAbout(ctx: CommandContext): Promise<void> {
   await readAnyKey(ctx, "\nPress any key to return to the main menu...");
 }
 
+async function showWelcomeGuestbookPost(ctx: CommandContext): Promise<void> {
+  ctx.terminal.writeln("");
+  ctx.terminal.writeln(
+    "\x1b[38;5;19m╔══════════════════════════════════════════════════════════════════════════════╗\x1b[0m",
+  );
+  const heading = "LATEST GUESTBOOK POST :: from the last caller log";
+  ctx.terminal.writeln(
+    `\x1b[38;5;19m║\x1b[0m \x1b[1;38;5;201m${heading.padEnd(76, " ")}\x1b[0m \x1b[38;5;19m║\x1b[0m`,
+  );
+  ctx.terminal.writeln(
+    "\x1b[38;5;19m╠══════════════════════════════════════════════════════════════════════════════╣\x1b[0m",
+  );
+
+  try {
+    const [latestEntry] = await fetchGuestbookEntries();
+    if (!latestEntry) {
+      writeWelcomeBulletinLine(ctx, "No guestbook entries yet. Be the first.");
+    } else {
+      writeWelcomeBulletinLine(
+        ctx,
+        `${formatGuestbookDate(latestEntry.createdAt)} :: ${latestEntry.message}`,
+      );
+    }
+  } catch {
+    writeWelcomeBulletinLine(ctx, "Guestbook channel unavailable.");
+  }
+
+  ctx.terminal.writeln(
+    "\x1b[38;5;19m╚══════════════════════════════════════════════════════════════════════════════╝\x1b[0m",
+  );
+}
+
 async function showGuestbook(ctx: CommandContext): Promise<void> {
   ctx.terminal.write("\x1b[2J\x1b[H");
   ctx.terminal.writeln("\x1b[38;5;51mBURMISTER.COM BBS GUESTBOOK\x1b[0m");
   ctx.terminal.writeln("--------------------------------");
   ctx.terminal.writeln("");
 
-  const entries = readGuestbookEntries();
+  let entries: GuestbookEntry[];
+  try {
+    entries = await fetchGuestbookEntries();
+  } catch {
+    ctx.terminal.writeln("Guestbook is unavailable. Try again later.");
+    await readAnyKey(ctx, "\nPress any key to return to the main menu...");
+    return;
+  }
   if (entries.length === 0) {
-    ctx.terminal.writeln("No local guestbook entries yet.");
+    ctx.terminal.writeln("No guestbook entries yet.");
   } else {
     for (const [index, entry] of entries.entries()) {
       ctx.terminal.writeln(
-        `${(index + 1).toString().padStart(2, "0")}. ${entry.createdAt}`,
+        `${(index + 1).toString().padStart(2, "0")}. ${formatGuestbookDate(
+          entry.createdAt,
+        )}`,
       );
       ctx.terminal.writeln(`    ${entry.message}`);
     }
   }
 
   ctx.terminal.writeln("");
-  ctx.terminal.writeln(
-    "Messages are locally cached pending future server sync.",
-  );
+  ctx.terminal.writeln("The board keeps the 10 most recent entries.");
   const message = (
     await readLine(
       ctx,
@@ -192,13 +251,20 @@ async function showGuestbook(ctx: CommandContext): Promise<void> {
   ).trim();
 
   if (message.length > 0) {
-    entries.push({
-      message,
-      createdAt: new Date().toLocaleString(),
-    });
-    writeGuestbookEntries(entries);
     ctx.terminal.writeln("");
-    ctx.terminal.writeln("Message cached. Thanks for signing the board.");
+    ctx.terminal.write("Saving message");
+    await sleep(250);
+    ctx.terminal.write(".");
+    try {
+      await saveGuestbookEntry(message);
+      ctx.terminal.writeln("");
+      ctx.terminal.writeln("Message posted. Thanks for signing the board.");
+    } catch {
+      ctx.terminal.writeln("");
+      ctx.terminal.writeln(
+        "Guestbook save failed. The carrier stayed up, at least.",
+      );
+    }
   } else {
     ctx.terminal.writeln("");
     ctx.terminal.writeln("No message saved.");
@@ -358,37 +424,105 @@ function readAnyKey(ctx: CommandContext, prompt: string): Promise<void> {
   });
 }
 
-function readGuestbookEntries(): GuestbookEntry[] {
-  try {
-    const storedEntries = window.localStorage.getItem(GUESTBOOK_STORAGE_KEY);
-    if (!storedEntries) {
-      return [];
-    }
+async function sleepUntilSkipped(
+  delayMs: number,
+  shouldSkip: () => boolean,
+): Promise<void> {
+  let elapsedMs = 0;
 
-    const parsedEntries = JSON.parse(storedEntries);
-    if (!Array.isArray(parsedEntries)) {
-      return [];
-    }
-
-    return parsedEntries
-      .filter(
-        (entry): entry is GuestbookEntry =>
-          typeof entry?.message === "string" &&
-          typeof entry?.createdAt === "string",
-      )
-      .slice(-8);
-  } catch {
-    return [];
+  while (elapsedMs < delayMs && !shouldSkip()) {
+    const tickMs = Math.min(DIALUP_SKIP_TICK_MS, delayMs - elapsedMs);
+    await sleep(tickMs);
+    elapsedMs += tickMs;
   }
 }
 
-function writeGuestbookEntries(entries: GuestbookEntry[]): void {
-  try {
-    window.localStorage.setItem(
-      GUESTBOOK_STORAGE_KEY,
-      JSON.stringify(entries.slice(-8)),
+function writeWelcomeBulletinLine(ctx: CommandContext, message: string): void {
+  const lines = wrapTerminalLine(message, 76);
+  for (const line of lines) {
+    ctx.terminal.writeln(
+      `\x1b[38;5;19m║\x1b[0m \x1b[38;5;250m${line.padEnd(76, " ")}\x1b[0m \x1b[38;5;19m║\x1b[0m`,
     );
-  } catch {
-    // Local storage can be unavailable in private browsing modes.
   }
+}
+
+function wrapTerminalLine(message: string, width: number): string[] {
+  const words = message.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    if (word.length > width) {
+      if (currentLine) {
+        lines.push(currentLine);
+        currentLine = "";
+      }
+      for (let index = 0; index < word.length; index += width) {
+        lines.push(word.slice(index, index + width));
+      }
+      continue;
+    }
+
+    const nextLine = currentLine ? `${currentLine} ${word}` : word;
+    if (nextLine.length > width) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = nextLine;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines.length > 0 ? lines : [""];
+}
+
+async function fetchGuestbookEntries(): Promise<GuestbookEntry[]> {
+  const response = await fetch(GUESTBOOK_API_URL);
+  if (!response.ok) {
+    throw new Error(`guestbook list failed: ${response.status}`);
+  }
+
+  const body = (await response.json()) as GuestbookListResponse;
+  return Array.isArray(body.entries)
+    ? body.entries.filter(isGuestbookEntry).slice(0, 10)
+    : [];
+}
+
+async function saveGuestbookEntry(message: string): Promise<void> {
+  const response = await fetch(GUESTBOOK_API_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`guestbook save failed: ${response.status}`);
+  }
+}
+
+function isGuestbookEntry(entry: unknown): entry is GuestbookEntry {
+  return (
+    typeof entry === "object" &&
+    entry !== null &&
+    "id" in entry &&
+    "message" in entry &&
+    "createdAt" in entry &&
+    typeof entry.id === "string" &&
+    typeof entry.message === "string" &&
+    typeof entry.createdAt === "string"
+  );
+}
+
+function formatGuestbookDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString();
 }

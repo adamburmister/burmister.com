@@ -2,7 +2,21 @@
   "compatibility_date": "2026-05-03",
   "compatibility_flags": ["global_fetch_strictly_public"],
   "name": "burmister-bbs",
-  "main": "@astrojs/cloudflare/entrypoints/server",
+  "main": "src/worker.ts",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "GUESTBOOK",
+        "class_name": "GuestbookDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["GuestbookDurableObject"]
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
