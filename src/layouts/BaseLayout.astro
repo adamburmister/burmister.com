@@ -1,6 +1,4 @@
 ---
-import { portfolio } from "../data/portfolio";
-
 interface Props {
 	title?: string;
 	description?: string;
@@ -9,18 +7,21 @@ interface Props {
 	terminalOnly?: boolean;
 }
 
+const siteName = "Adam Burmister";
+const siteTitle = "Full Stack Engineer";
+const siteDescription =
+	"Adam Burmister is a full-stack engineer focused on practical systems, polished web products, TypeScript, React, Node.js, and cloud infrastructure.";
+
 const {
-	title = `${portfolio.name} - ${portfolio.title}`,
-	description = portfolio.description,
+	title = `${siteName} - ${siteTitle}`,
+	description = siteDescription,
 	canonicalPath = "/",
 	image = "/assets/images/thumbnail.png",
 	terminalOnly = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(canonicalPath, "https://burmister.com").toString();
-const pageTitle = title.includes(portfolio.name)
-	? title
-	: `${title} - ${portfolio.name}`;
+const pageTitle = title.includes(siteName) ? title : `${title} - ${siteName}`;
 ---
 
 <!doctype html>
@@ -30,7 +31,7 @@ const pageTitle = title.includes(portfolio.name)
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
-		<meta name="author" content={portfolio.name} />
+		<meta name="author" content={siteName} />
 		<meta name="theme-color" content="#111416" />
 		<link rel="canonical" href={canonicalUrl} />
 		<link rel="icon" type="image/png" href="/assets/images/favicon.png" />

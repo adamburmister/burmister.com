@@ -1,24 +1,38 @@
 ---
 import TerminalExperience from "../components/TerminalExperience.astro";
-import { portfolio } from "../data/portfolio";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 export const prerender = true;
+
+const name = "Adam Burmister";
+const description =
+	"Adam Burmister is a full-stack engineer focused on practical systems, polished web products, TypeScript, React, Node.js, and cloud infrastructure.";
+const imagePath = "/assets/adam-burmister.png";
+const skills = [
+	"TypeScript",
+	"React",
+	"Node.js",
+	"Astro",
+	"Vite",
+	"Cloudflare",
+	"API design",
+	"Product engineering",
+	"Frontend architecture",
+	"Technical leadership",
+];
 ---
 
-<BaseLayout terminalOnly canonicalPath="/" image={portfolio.imagePath}>
+<BaseLayout terminalOnly canonicalPath="/" image={imagePath}>
 	<TerminalExperience />
 	<main class="visually-hidden">
-		<h1>{portfolio.name}</h1>
-		<p>{portfolio.description}</p>
-		<a href={portfolio.resumePdfPath}>Download Adam Burmister's resume PDF</a>
-		<a href="/resume">Resume</a>
-		<a href="/projects">Projects</a>
+		<h1>{name}</h1>
+		<p>{description}</p>
+		<a href="/cv.pdf">Download Adam Burmister's resume PDF</a>
 		<a href="/colophon">Colophon</a>
 		<section>
 			<h2>Skills</h2>
 			<ul>
-				{portfolio.skills.map((skill) => <li>{skill}</li>)}
+				{skills.map((skill) => <li>{skill}</li>)}
 			</ul>
 		</section>
 	</main>

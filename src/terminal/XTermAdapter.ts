@@ -704,16 +704,6 @@ export class XTermAdapter {
       getSize: () => {
         return this.terminalText.getGridSize();
       },
-      // Video playback methods
-      playVideo: (url: string) => {
-        return this.terminalText.playVideo(url);
-      },
-      stopVideo: () => {
-        this.terminalText.stopVideo();
-      },
-      getVideoElement: () => {
-        return this.terminalText.getVideoElement();
-      },
       // Game music methods
       startGameMusic: () => {
         if (this.audioControls) {

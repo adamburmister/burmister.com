@@ -27,7 +27,7 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aburmister/burmister.com"
+    "url": "https://github.com/adamburmister/burmister.com"
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^13.3.1",

@@ -49,12 +49,6 @@ export interface TerminalIO {
   showCursor?(): void;
   /** Get terminal size in columns and rows */
   getSize?(): { cols: number; rows: number };
-  /** Play a video file with CRT effects */
-  playVideo?(url: string): Promise<void>;
-  /** Stop video playback */
-  stopVideo?(): void;
-  /** Get the video element for external control */
-  getVideoElement?(): HTMLVideoElement | null;
   /** Start game music (loops) */
   startGameMusic?(): void;
   /** Stop game music */
@@ -341,26 +335,8 @@ function getPrompt(): string {
  * @param name - The command name (e.g., "help", "ls", "echo")
  * @param handler - The function to handle the command
  */
-export function registerCommand(name: string, handler: CommandHandler): void {
+function registerCommand(name: string, handler: CommandHandler): void {
   commandRegistry.set(name.toLowerCase(), handler);
-}
-
-/**
- * Unregister a command handler
- *
- * @param name - The command name to unregister
- */
-export function unregisterCommand(name: string): void {
-  commandRegistry.delete(name.toLowerCase());
-}
-
-/**
- * Check if a command is registered
- *
- * @param name - The command name to check
- */
-export function hasCommand(name: string): boolean {
-  return commandRegistry.has(name.toLowerCase());
 }
 
 export async function loadVirtualFileContent(
@@ -560,53 +536,6 @@ export function sleep(ms: number): Promise<void> {
 export function getInitialOutput(): string {
   return getPrompt();
 }
-
-// ============================================
-// Built-in Commands
-// ============================================
-
-// registerCommand("resume", cvCommand);
-// registerCommand("cv", cvCommand);
-
-// registerCommand("projects", (ctx) => {
-//   ctx.terminal.writeln("Selected work");
-//   ctx.terminal.writeln("-------------");
-//   for (const project of portfolio.projects) {
-//     ctx.terminal.writeln(project.name);
-//     ctx.terminal.writeln(project.summary);
-//     ctx.terminal.writeln(`Stack: ${project.technologies.join(", ")}`);
-//     if (project.url) {
-//       ctx.terminal.writeln(`URL: ${project.url}`);
-//     }
-//     ctx.terminal.writeln("");
-//   }
-//   ctx.terminal.writeln("HTML: /projects");
-// });
-
-// registerCommand("skills", (ctx) => {
-//   ctx.terminal.writeln("Skills");
-//   ctx.terminal.writeln("------");
-//   for (const skill of portfolio.skills) {
-//     ctx.terminal.writeln(`- ${skill}`);
-//   }
-// });
-
-// registerCommand("contact", async (ctx) => {
-//   try {
-//     const response = await fetch("/assets/content/contact.txt");
-//     if (!response.ok) {
-//       ctx.terminal.writeln("contact: unable to load contact.txt");
-//       return;
-//     }
-
-//     const contactText = await response.text();
-//     for (const line of contactText.split("\n")) {
-//       ctx.terminal.writeln(line);
-//     }
-//   } catch {
-//     ctx.terminal.writeln("contact: unable to load contact.txt");
-//   }
-// });
 
 // CD command - change directory
 registerCoreCommand(
@@ -826,196 +755,6 @@ registerCoreCommand(
   },
 );
 
-// // ============================================
-// // FFPlay - Video Player with CRT Effects
-// // ============================================
-
-// /**
-//  * Map of video files to their actual URLs
-//  */
-// const videoFiles: Map<string, string> = new Map();
-
-// /**
-//  * ffplay command - play video files with CRT effects
-//  */
-// registerCommand("ffplay", async (ctx) => {
-//   // Check if video playback is supported
-//   if (!ctx.terminal.playVideo || !ctx.terminal.stopVideo) {
-//     ctx.terminal.writeln("ffplay: error - video playback not supported");
-//     return;
-//   }
-
-//   // Check for arguments
-//   if (ctx.args.length < 2) {
-//     ctx.terminal.writeln("ffplay: missing file operand");
-//     ctx.terminal.writeln("Usage: ffplay <filename>");
-//     return;
-//   }
-
-//   const inputPath = ctx.args[1];
-//   const resolvedPath = resolvePath(inputPath);
-
-//   // Check if file exists in virtual filesystem
-//   const file = virtualFileSystem.get(resolvedPath);
-//   if (!file) {
-//     ctx.terminal.writeln(`ffplay: ${inputPath}: No such file or directory`);
-//     return;
-//   }
-
-//   // Check if it's a video file
-//   const videoUrl = videoFiles.get(resolvedPath);
-//   if (!videoUrl) {
-//     ctx.terminal.writeln(`ffplay: ${inputPath}: Not a supported video format`);
-//     return;
-//   }
-
-//   // Check if key handler is available for stop control
-//   if (!ctx.terminal.setKeyHandler || !ctx.terminal.clearKeyHandler) {
-//     ctx.terminal.writeln(
-//       "ffplay: error - terminal does not support input capture",
-//     );
-//     return;
-//   }
-
-//   // Show instructions and wait for Enter to start
-//   ctx.terminal.writeln(`Playing: ${inputPath}`);
-//   ctx.terminal.writeln("");
-//   ctx.terminal.writeln("Controls:");
-//   ctx.terminal.writeln("  SPACE    - Pause/Resume");
-//   ctx.terminal.writeln("  F        - Forward 10 seconds");
-//   ctx.terminal.writeln("  B        - Backward 10 seconds");
-//   ctx.terminal.writeln("  Q / ESC  - Stop playback");
-//   ctx.terminal.writeln("");
-//   ctx.terminal.writeln("Press ENTER to start playback...");
-
-//   // Wait for Enter key
-//   let _startConfirmed = false;
-//   let cancelled = false;
-
-//   // Store reference to setKeyHandler before entering Promise (already validated above)
-//   const setKeyHandler = ctx.terminal.setKeyHandler;
-
-//   const waitForEnter = new Promise<void>((resolve) => {
-//     const enterHandler: KeyHandler = (
-//       key: string,
-//       eventType: "keydown" | "keyup",
-//     ) => {
-//       if (eventType !== "keydown") return;
-
-//       // Enter to start
-//       if (key === "Enter") {
-//         _startConfirmed = true;
-//         ctx.terminal.clearKeyHandler?.();
-//         resolve();
-//       }
-//       // Q or Escape to cancel
-//       if (
-//         key === "q" ||
-//         key === "Q" ||
-//         key === "Escape"
-//       ) {
-//         cancelled = true;
-//         ctx.terminal.clearKeyHandler?.();
-//         resolve();
-//       }
-//     };
-
-//     setKeyHandler(enterHandler);
-//   });
-
-//   await waitForEnter;
-
-//   if (cancelled) {
-//     ctx.terminal.writeln("");
-//     ctx.terminal.writeln("Playback cancelled.");
-//     return;
-//   }
-
-//   // Hide cursor during playback
-//   if (ctx.terminal.hideCursor) {
-//     ctx.terminal.hideCursor();
-//   }
-
-//   // Clear terminal for video display
-//   ctx.terminal.clear();
-
-//   let stopped = false;
-
-//   // Set up key handler to stop video
-//   const keyHandler: KeyHandler = (
-//     key: string,
-//     eventType: "keydown" | "keyup",
-//     ctrlKey?: boolean,
-//   ) => {
-//     if (eventType !== "keydown") return;
-
-//     // Q to quit
-//     if (key.toLowerCase() === "q") {
-//       stopped = true;
-//       ctx.terminal.stopVideo?.();
-//     }
-//     // Escape to quit
-//     if (key === "Escape") {
-//       stopped = true;
-//       ctx.terminal.stopVideo?.();
-//     }
-//     // Ctrl+C to quit
-//     if ((key === "c" || key === "C") && ctrlKey) {
-//       stopped = true;
-//       ctx.terminal.stopVideo?.();
-//     }
-//     // Space to pause/play
-//     if (key === " ") {
-//       const video = ctx.terminal.getVideoElement?.();
-//       if (video) {
-//         if (video.paused) {
-//           video.play();
-//         } else {
-//           video.pause();
-//         }
-//       }
-//     }
-//     // F to forward 10 seconds
-//     if (key.toLowerCase() === "f") {
-//       const video = ctx.terminal.getVideoElement?.();
-//       if (video) {
-//         video.currentTime = Math.min(video.currentTime + 10, video.duration);
-//       }
-//     }
-//     // B to backward 10 seconds
-//     if (key.toLowerCase() === "b") {
-//       const video = ctx.terminal.getVideoElement?.();
-//       if (video) {
-//         video.currentTime = Math.max(video.currentTime - 10, 0);
-//       }
-//     }
-//   };
-
-//   ctx.terminal.setKeyHandler(keyHandler);
-
-//   try {
-//     // Play the video
-//     await ctx.terminal.playVideo(videoUrl);
-//   } catch (error) {
-//     if (!stopped) {
-//       const errorMessage =
-//         error instanceof Error ? error.message : String(error);
-//       ctx.terminal.writeln(`ffplay: error playing video: ${errorMessage}`);
-//     }
-//   }
-
-//   // Clean up
-//   ctx.terminal.clearKeyHandler();
-//   if (ctx.terminal.showCursor) {
-//     ctx.terminal.showCursor();
-//   }
-
-//   if (!stopped) {
-//     ctx.terminal.writeln("");
-//     ctx.terminal.writeln("Playback finished.");
-//   }
-// });
-
 registerDiscoveredTerminalModules();
 
 /**
@@ -1159,5 +898,3 @@ export function getTabCompletions(partialInput: string): {
     isCommand: false,
   };
 }
-
-export { getPrompt };
