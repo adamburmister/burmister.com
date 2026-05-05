@@ -44,21 +44,18 @@ const pageTitle = title.includes(portfolio.name)
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(image, "https://burmister.com").toString()} />
+		<meta
+			property="og:image"
+			content={new URL(image, "https://burmister.com").toString()}
+		/>
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content={canonicalUrl} />
 		<meta name="twitter:title" content={pageTitle} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={new URL(image, "https://burmister.com").toString()} />
-		<script type="application/ld+json" set:html={JSON.stringify({
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: portfolio.name,
-			jobTitle: portfolio.title,
-			url: "https://burmister.com",
-			image: new URL(portfolio.imagePath, "https://burmister.com").toString(),
-			sameAs: portfolio.social.map((link) => link.url),
-		})} />
+		<meta
+			name="twitter:image"
+			content={new URL(image, "https://burmister.com").toString()}
+		/>
 	</head>
 	<body class:list={[terminalOnly && "terminal-only"]}>
 		<slot />

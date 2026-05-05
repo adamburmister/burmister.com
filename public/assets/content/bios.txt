@@ -4,7 +4,7 @@
 ▙▘▌▌▌▌▌▙▘▌▛▌▛▘
 ▌▌▌▚▚▘▌▙▘▌▙▌▄▌
 
-KiwiBios — AwardBios v1.0, An Energy Star Ally
+KiwiBios — v1.0, An Energy Star Ally
 Copyright (C) 2026, Award Software, Inc.
 
 256MB OK

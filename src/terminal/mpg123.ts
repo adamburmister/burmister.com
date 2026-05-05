@@ -252,7 +252,6 @@
 // 	// Set up key handler
 // 	const keyHandler: KeyHandler = (
 // 		key: string,
-// 		_keyCode: number,
 // 		eventType: "keydown" | "keyup",
 // 		ctrlKey?: boolean,
 // 	) => {

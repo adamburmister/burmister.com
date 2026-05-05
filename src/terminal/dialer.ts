@@ -311,19 +311,18 @@ function readLine(
 
     const keyHandler: KeyHandler = (
       key: string,
-      keyCode: number,
       eventType: "keydown" | "keyup",
     ) => {
       if (eventType !== "keydown") {
         return;
       }
 
-      if (key === "Enter" || keyCode === 13) {
+      if (key === "Enter") {
         finish();
         return;
       }
 
-      if (key === "Backspace" || keyCode === 8) {
+      if (key === "Backspace") {
         if (value.length > 0) {
           value = value.slice(0, -1);
           ctx.terminal.write("\b \b");
@@ -345,7 +344,7 @@ function readAnyKey(ctx: CommandContext, prompt: string): Promise<void> {
   ctx.terminal.write(prompt);
 
   return new Promise((resolve) => {
-    const keyHandler: KeyHandler = (_key, _keyCode, eventType) => {
+    const keyHandler: KeyHandler = (_key, eventType) => {
       if (eventType !== "keydown") {
         return;
       }

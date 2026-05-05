@@ -128,6 +128,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
       if (!dialupAudioLoaded || !dialupBuffer) {
         return;
       }
+      const activeDialupBuffer = dialupBuffer;
 
       if (dialupAudio.isPlaying) {
         dialupAudio.stop();
@@ -138,7 +139,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
       await new Promise<void>((resolve) => {
         window.setTimeout(() => {
           resolve();
-        }, dialupBuffer.duration * 1000);
+        }, activeDialupBuffer.duration * 1000);
       });
     },
     stopDialupAudio: () => {

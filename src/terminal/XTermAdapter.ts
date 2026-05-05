@@ -140,12 +140,12 @@ export class XTermAdapter {
           return false;
         }
         const eventType = event.type as "keydown" | "keyup";
-        this.gameKeyHandler(event.key, event.keyCode, eventType);
+        this.gameKeyHandler(event.key, eventType);
         return false; // Prevent xterm from processing
       }
 
       // Arrow Up - handle history navigation, prevent xterm from moving cursor
-      if (event.key === "ArrowUp" || event.keyCode === 38) {
+      if (event.key === "ArrowUp") {
         if (event.type === "keydown") {
           this.handleArrowUp();
         }
@@ -153,7 +153,7 @@ export class XTermAdapter {
       }
 
       // Arrow Down - handle history navigation, prevent xterm from moving cursor
-      if (event.key === "ArrowDown" || event.keyCode === 40) {
+      if (event.key === "ArrowDown") {
         if (event.type === "keydown") {
           this.handleArrowDown();
         }
@@ -162,27 +162,17 @@ export class XTermAdapter {
 
       // Arrow Left/Right - block entirely to keep cursor at end of input
       // This simplifies the input model and prevents prompt editing
-      if (
-        event.key === "ArrowLeft" ||
-        event.keyCode === 37 ||
-        event.key === "ArrowRight" ||
-        event.keyCode === 39
-      ) {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         return false; // Block cursor movement within line
       }
 
       // Home/End keys - block to keep cursor at end
-      if (
-        event.key === "Home" ||
-        event.keyCode === 36 ||
-        event.key === "End" ||
-        event.keyCode === 35
-      ) {
+      if (event.key === "Home" || event.key === "End") {
         return false;
       }
 
       // Tab key - handle autocompletion
-      if (event.key === "Tab" || event.keyCode === 9) {
+      if (event.key === "Tab") {
         if (event.type === "keydown") {
           this.handleTab();
         }
@@ -191,7 +181,7 @@ export class XTermAdapter {
       }
 
       // Backspace - handle ourselves to protect the prompt
-      if (event.key === "Backspace" || event.keyCode === 8) {
+      if (event.key === "Backspace") {
         if (event.type === "keydown") {
           this.handleBackspace();
         }
@@ -200,7 +190,7 @@ export class XTermAdapter {
       }
 
       // Enter key - handle command execution consistently
-      if (event.key === "Enter" || event.keyCode === 13) {
+      if (event.key === "Enter") {
         if (event.type === "keydown") {
           this.handleEnter();
         }
@@ -267,23 +257,21 @@ export class XTermAdapter {
       // Forward the event to xterm by simulating focus and re-dispatching
       // We handle special keys ourselves, let xterm handle printable chars
       const key = event.key;
-      const keyCode = event.keyCode;
-
       if (event.type === "keydown") {
         // Handle special keys
-        if (key === "Enter" || keyCode === 13) {
+        if (key === "Enter") {
           this.handleEnter();
           event.preventDefault();
-        } else if (key === "Backspace" || keyCode === 8) {
+        } else if (key === "Backspace") {
           this.handleBackspace();
           event.preventDefault();
-        } else if (key === "ArrowUp" || keyCode === 38) {
+        } else if (key === "ArrowUp") {
           this.handleArrowUp();
           event.preventDefault();
-        } else if (key === "ArrowDown" || keyCode === 40) {
+        } else if (key === "ArrowDown") {
           this.handleArrowDown();
           event.preventDefault();
-        } else if (key === "Tab" || keyCode === 9) {
+        } else if (key === "Tab") {
           this.handleTab();
           event.preventDefault();
         } else if (
@@ -634,7 +622,7 @@ export class XTermAdapter {
       .toString()
       .padStart(3, " ");
 
-    return `[${"▓".repeat(completedBlocks)}${" ".repeat(remainingBlocks)}] ${percent}%`;
+    return `[${"|".repeat(completedBlocks)}${" ".repeat(remainingBlocks)}] ${percent}%`;
   }
 
   /**
@@ -672,12 +660,7 @@ export class XTermAdapter {
               return;
             }
             const eventType = event.type as "keydown" | "keyup";
-            this.gameKeyHandler(
-              event.key,
-              event.keyCode,
-              eventType,
-              event.ctrlKey,
-            );
+            this.gameKeyHandler(event.key, eventType, event.ctrlKey);
             event.preventDefault();
             event.stopPropagation();
           }
@@ -1079,8 +1062,6 @@ export class XTermAdapter {
    * Handle keyboard input
    */
   private handleKey(key: string, domEvent: KeyboardEvent): void {
-    const keyCode = domEvent.keyCode;
-
     // Reset cursor blink on any keypress (shows cursor immediately)
     this.terminalText.resetCursorBlink();
 
@@ -1098,7 +1079,7 @@ export class XTermAdapter {
     // (Note: most keys are already handled by attachCustomKeyEventHandler,
     // but this catches any that slip through onKey)
     if (this.gameKeyHandler) {
-      this.gameKeyHandler(key, keyCode, "keydown");
+      this.gameKeyHandler(key, "keydown");
       return;
     }
 
@@ -1111,21 +1092,21 @@ export class XTermAdapter {
     // Enter key is now handled by attachCustomKeyEventHandler
 
     // Backspace is now handled by attachCustomKeyEventHandler
-    if (keyCode === 8) {
+    if (key === "Backspace") {
       return; // Skip - already handled
     }
 
     // Arrow Up/Down are handled by attachCustomKeyEventHandler
 
     // Page Up - scroll up one page (mouse wheel handles normal scroll)
-    if (keyCode === 33) {
+    if (key === "PageUp") {
       this.scrollUp(this.xterm.rows);
       domEvent.preventDefault();
       return;
     }
 
     // Page Down - scroll down one page (mouse wheel handles normal scroll)
-    if (keyCode === 34) {
+    if (key === "PageDown") {
       this.scrollDown(this.xterm.rows);
       domEvent.preventDefault();
       return;

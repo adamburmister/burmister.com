@@ -1,0 +1,9 @@
+{
+  "version": "0.2",
+  "ignorePaths": ["*.ans", ".gitignore"],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": ["COOLDOWN", "Dialup"],
+  "ignoreWords": [],
+  "import": []
+}

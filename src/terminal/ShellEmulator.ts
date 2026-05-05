@@ -26,13 +26,11 @@ import { spaceInvadersCommand } from "./space-invaders";
 /**
  * Key handler function type for games and interactive apps
  * @param key - The key string (e.g., "ArrowUp", "a")
- * @param keyCode - The numeric key code
  * @param eventType - "keydown" or "keyup"
  * @param ctrlKey - Whether Ctrl key is held
  */
 export type KeyHandler = (
   key: string,
-  keyCode: number,
   eventType: "keydown" | "keyup",
   ctrlKey?: boolean,
 ) => void;
@@ -954,13 +952,12 @@ registerCommand("./matrix", matrixCommand);
 //   const waitForEnter = new Promise<void>((resolve) => {
 //     const enterHandler: KeyHandler = (
 //       key: string,
-//       keyCode: number,
 //       eventType: "keydown" | "keyup",
 //     ) => {
 //       if (eventType !== "keydown") return;
 
 //       // Enter to start
-//       if (key === "Enter" || keyCode === 13) {
+//       if (key === "Enter") {
 //         _startConfirmed = true;
 //         ctx.terminal.clearKeyHandler?.();
 //         resolve();
@@ -969,9 +966,7 @@ registerCommand("./matrix", matrixCommand);
 //       if (
 //         key === "q" ||
 //         key === "Q" ||
-//         keyCode === 81 ||
-//         key === "Escape" ||
-//         keyCode === 27
+//         key === "Escape"
 //       ) {
 //         cancelled = true;
 //         ctx.terminal.clearKeyHandler?.();
@@ -1003,19 +998,18 @@ registerCommand("./matrix", matrixCommand);
 //   // Set up key handler to stop video
 //   const keyHandler: KeyHandler = (
 //     key: string,
-//     keyCode: number,
 //     eventType: "keydown" | "keyup",
 //     ctrlKey?: boolean,
 //   ) => {
 //     if (eventType !== "keydown") return;
 
 //     // Q to quit
-//     if (key === "q" || key === "Q" || keyCode === 81) {
+//     if (key.toLowerCase() === "q") {
 //       stopped = true;
 //       ctx.terminal.stopVideo?.();
 //     }
 //     // Escape to quit
-//     if (key === "Escape" || keyCode === 27) {
+//     if (key === "Escape") {
 //       stopped = true;
 //       ctx.terminal.stopVideo?.();
 //     }
@@ -1025,7 +1019,7 @@ registerCommand("./matrix", matrixCommand);
 //       ctx.terminal.stopVideo?.();
 //     }
 //     // Space to pause/play
-//     if (key === " " || keyCode === 32) {
+//     if (key === " ") {
 //       const video = ctx.terminal.getVideoElement?.();
 //       if (video) {
 //         if (video.paused) {
@@ -1036,14 +1030,14 @@ registerCommand("./matrix", matrixCommand);
 //       }
 //     }
 //     // F to forward 10 seconds
-//     if (key === "f" || key === "F" || keyCode === 70) {
+//     if (key.toLowerCase() === "f") {
 //       const video = ctx.terminal.getVideoElement?.();
 //       if (video) {
 //         video.currentTime = Math.min(video.currentTime + 10, video.duration);
 //       }
 //     }
 //     // B to backward 10 seconds
-//     if (key === "b" || key === "B" || keyCode === 66) {
+//     if (key.toLowerCase() === "b") {
 //       const video = ctx.terminal.getVideoElement?.();
 //       if (video) {
 //         video.currentTime = Math.max(video.currentTime - 10, 0);

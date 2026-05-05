@@ -1,45 +1,49 @@
 {
-	"name": "burmister-com",
-	"version": "1.0.0",
-	"description": "Adam Burmister's retro terminal CV and portfolio website",
-	"type": "module",
-	"scripts": {
-		"build": "astro build",
-		"dev": "astro dev",
-		"preview": "astro preview",
-		"deploy": "wrangler deploy",
-		"lint-and-format": "npx @biomejs/biome check --write --unsafe",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"keywords": [
-		"terminal",
-		"xterm",
-		"crt",
-		"retro",
-		"webgl",
-		"three.js",
-		"cool-retro-term"
-	],
-	"author": "Adam Burmister",
-	"license": "GPL-3.0",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/aburmister/burmister.com"
-	},
-	"devDependencies": {
-		"@astrojs/cloudflare": "^12.6.5",
-		"@astrojs/sitemap": "^3.6.0",
-		"@biomejs/biome": "^2.3.10",
-		"@types/three": "^0.182.0",
-		"astro": "^5.15.4",
-		"node-addon-api": "^8.5.0",
-		"node-gyp": "^12.1.0",
-		"typescript": "^5.7.2",
-		"wrangler": "^4.40.2"
-	},
-	"dependencies": {
-		"@types/stats.js": "^0.17.4",
-		"@xterm/xterm": "^6.0.0",
-		"cool-retro-term-renderer": "^1.0.0"
-	}
+  "name": "burmister-com",
+  "version": "1.0.0",
+  "description": "Adam Burmister's retro terminal CV and portfolio website",
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "lint-and-format": "npx @biomejs/biome check --write --unsafe",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-types": "wrangler types",
+    "cf-preview": "astro build && wrangler dev",
+    "cf-deploy": "astro build && wrangler deploy"
+  },
+  "keywords": [
+    "terminal",
+    "xterm",
+    "crt",
+    "retro",
+    "webgl",
+    "three.js",
+    "cool-retro-term"
+  ],
+  "author": "Adam Burmister",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aburmister/burmister.com"
+  },
+  "devDependencies": {
+    "@astrojs/cloudflare": "^13.3.1",
+    "@astrojs/sitemap": "^3.7.2",
+    "@biomejs/biome": "^2.3.10",
+    "@types/three": "^0.182.0",
+    "astro": "^6.2.2",
+    "node-addon-api": "^8.5.0",
+    "node-gyp": "^12.1.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.40.2"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/stats.js": "^0.17.4",
+    "@xterm/xterm": "^6.0.0",
+    "cool-retro-term-renderer": "^1.0.0"
+  }
 }
