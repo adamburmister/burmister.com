@@ -2,8 +2,8 @@
  * Chess - Classic chess game with AI opponent
  */
 
-import type { CommandContext, KeyHandler } from "./ShellEmulator";
-import { sleep } from "./ShellEmulator";
+import type { CommandContext, KeyHandler } from "./shellTypes";
+import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 // ============================================

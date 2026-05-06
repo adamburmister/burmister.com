@@ -1,6 +1,7 @@
-import type { CommandContext, KeyHandler } from "./ShellEmulator";
-import { loadVirtualFileContent, sleep } from "./ShellEmulator";
+import type { CommandContext, KeyHandler } from "./shellTypes";
+import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
+import { loadVirtualFileContent } from "./virtualFileSystem";
 
 const PAGER_FRAME_DELAY_MS = 50;
 

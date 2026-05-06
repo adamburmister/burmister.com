@@ -1,5 +1,5 @@
-import type { CommandContext, HelpEntry } from "./ShellEmulator";
-import { getVisibleHelpEntries } from "./ShellEmulator";
+import { getVisibleHelpEntries, type HelpEntry } from "./commandRegistry";
+import type { CommandContext } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 export function helpCommand(ctx: CommandContext): void {

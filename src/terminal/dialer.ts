@@ -1,9 +1,6 @@
-import {
-  type CommandContext,
-  type KeyHandler,
-  runCommand,
-  sleep,
-} from "./ShellEmulator";
+import { runCommand } from "./shellRunner";
+import type { CommandContext, KeyHandler } from "./shellTypes";
+import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 const ANSI_LINE_DELAY_MS = 45;

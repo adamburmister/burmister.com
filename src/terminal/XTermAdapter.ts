@@ -19,11 +19,9 @@ import { isMobileDevice } from "../utils";
 import {
   getInitialOutput,
   getTabCompletions,
-  type KeyHandler,
-  type KeyHandlerOptions,
   runCommand,
-  type TerminalIO,
 } from "./ShellEmulator";
+import type { KeyHandler, KeyHandlerOptions, TerminalIO } from "./shellTypes";
 import {
   type StyledTerminalCell,
   type StyledTerminalLine,
@@ -510,7 +508,7 @@ export class XTermAdapter {
   private async printBiosSequence(): Promise<void> {
     try {
       // Fetch the BIOS content
-      const response = await fetch("/assets/content/bios.txt");
+      const response = await fetch("/assets/ansi/bios.ans");
       if (!response.ok) {
         console.warn("Could not load BIOS content:", response.statusText);
         return;

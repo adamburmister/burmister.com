@@ -1,5 +1,5 @@
 import { pageText } from "./less";
-import type { CommandContext } from "./ShellEmulator";
+import type { CommandContext } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 const RESUME_TEXT_URL = "/assets/content/resume.txt";

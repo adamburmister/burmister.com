@@ -2,8 +2,8 @@
  * Snake game - Classic arcade snake game
  */
 
-import type { CommandContext, KeyHandler } from "./ShellEmulator";
-import { sleep } from "./ShellEmulator";
+import type { CommandContext, KeyHandler } from "./shellTypes";
+import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 // ============================================

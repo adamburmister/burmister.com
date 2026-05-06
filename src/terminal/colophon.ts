@@ -1,4 +1,4 @@
-import type { CommandContext } from "./ShellEmulator";
+import type { CommandContext } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 const COLOPHON_TEXT_URL = "/assets/content/colophon.txt";

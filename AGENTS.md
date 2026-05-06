@@ -25,9 +25,7 @@ The BIOS sequence is loaded from `public/assets/content/bios.txt`. `@@@` separat
 
 ## Static Content
 
-- `public/assets/content/contact.txt`, `cv.txt`, and `colophon.txt` are the source of truth for terminal-visible text commands.
-- `public/assets/ansi/welcome.ans`, `menu.ans`, `about.ans`, and `doors.ans` are static ANSI BBS screens.
-- `public/assets/content/bios.txt` drives the BIOS animation.
+- `public/assets/ansi/bios.ans` drives the BIOS animation.
 - `public/assets/audio/background.mp3`, `game.mp3`, `chill-game.mp3`, and `dialup.mp3` are used by the terminal experience.
 - `public/cv.pdf` is the downloadable resume served by the BBS CV option. It should save as "Adam Burmister - Full Stack Engineer - Resume.pdf"
 

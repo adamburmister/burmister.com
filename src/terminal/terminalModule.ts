@@ -1,4 +1,4 @@
-import type { CommandHandler } from "./ShellEmulator";
+import type { CommandHandler } from "./shellTypes";
 
 export interface TerminalCommandDefinition {
   names: string[];

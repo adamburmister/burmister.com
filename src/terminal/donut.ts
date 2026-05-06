@@ -3,8 +3,8 @@
  * Inspired by the famous donut.c by Andy Sloane
  */
 
-import type { CommandContext, KeyHandler } from "./ShellEmulator";
-import { sleep } from "./ShellEmulator";
+import type { CommandContext, KeyHandler } from "./shellTypes";
+import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 /**
