@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agentskills.io/schemas/agent-skills-index-v0.2.json",
+  "skills": [
+    {
+      "name": "profile-summary",
+      "type": "skill",
+      "description": "Summarise Adam Burmister's public portfolio, resume and agent-readable resources.",
+      "url": "https://burmister.com/.well-known/agent-skills/profile-summary/SKILL.md",
+      "sha256": "08467e1484bd9632a4a9a63a4567c0dd336e0aac9dd289db04ca94c2a2ba42b7"
+    }
+  ]
+}

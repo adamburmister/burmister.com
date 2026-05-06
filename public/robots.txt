@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# Content Signals: https://contentsignals.org/
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+
 Sitemap: https://burmister.com/sitemap-index.xml
+Sitemap: https://burmister.com/sitemap.xml
+
+# Agent guidance
+# https://burmister.com/llms.txt
+# https://burmister.com/agents.txt

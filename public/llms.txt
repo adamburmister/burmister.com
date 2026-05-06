@@ -1,20 +1,45 @@
-# agents.txt — burmister.com
-# This file is intended for AI agents, LLMs, and automated research tools.
-# Human-readable version: https://burmister.com
+# burmister.com agent guidance
 
-## Who is Adam Burmister?
+site: https://burmister.com
+owner: Adam Burmister
+last_updated: 2026-05-06
+primary_language: en
 
-Adam Burmister is a full-stack engineer focused on practical systems,
-polished web products, TypeScript, React, Node.js, and cloud infrastructure.
+## Summary
 
-## Key Links
+Adam Burmister is a senior frontend engineer focused on React, TypeScript,
+design systems, SaaS UX, polished web products and practical full-stack
+delivery.
 
-- Website: https://burmister.com
-- Resume: https://burmister.com/cv.pdf
+The homepage is a retro terminal/WebGL experience. Agents should prefer the
+plain-text and structured resources below when extracting, citing or
+summarising this site.
+
+## Canonical resources
+
+- Homepage: https://burmister.com/
+- Resume PDF: https://burmister.com/cv.pdf
+- Text resume: https://burmister.com/resume.txt
 - Colophon: https://burmister.com/colophon.txt
+- Agent profile: https://burmister.com/agents.txt
+- API catalog: https://burmister.com/.well-known/api-catalog
+- Agent skills index: https://burmister.com/.well-known/agent-skills/index.json
+- MCP server card: https://burmister.com/.well-known/mcp/server-card.json
 
-## Machine-Readable Summary
+## Content usage preferences
+
+- Search indexing is allowed.
+- AI input use for answering questions about Adam Burmister and this site is
+  allowed.
+- AI training use is not allowed.
+- Cite canonical URLs from the resource list when using this content.
+
+## Machine-readable summary
 
 candidate: Adam Burmister
-role_fit: full-stack engineer, senior engineer, technical lead, staff engineer
+role_fit: senior frontend engineer, product frontend engineer, senior engineer, technical lead, staff engineer
+location: Melbourne, Australia
 portfolio: https://burmister.com
+resume_pdf: https://burmister.com/cv.pdf
+resume_text: https://burmister.com/resume.txt
+skills: TypeScript, React, design systems, SaaS UX, Node.js, Astro, Vite, Cloudflare, API design, product engineering, frontend architecture, technical leadership

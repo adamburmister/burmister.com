@@ -1,0 +1,131 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "burmister.com public API",
+    "version": "1.0.0",
+    "description": "Public API surfaces for Adam Burmister's terminal portfolio site."
+  },
+  "servers": [
+    {
+      "url": "https://burmister.com"
+    }
+  ],
+  "paths": {
+    "/api/guestbook": {
+      "get": {
+        "summary": "List guestbook entries",
+        "responses": {
+          "200": {
+            "description": "The latest public guestbook entries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestbookListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a guestbook entry",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestbookCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The updated latest public guestbook entries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestbookListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "ok"
+                    },
+                    "service": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["status", "service"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GuestbookCreateRequest": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": ["message"],
+        "additionalProperties": false
+      },
+      "GuestbookEntry": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "message", "createdAt"]
+      },
+      "GuestbookListResponse": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestbookEntry"
+            }
+          }
+        },
+        "required": ["entries"]
+      }
+    }
+  }
+}

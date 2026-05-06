@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "0.1.0",
+  "serverInfo": {
+    "name": "burmister.com",
+    "version": "1.0.0",
+    "description": "Agent discovery metadata for Adam Burmister's terminal portfolio site."
+  },
+  "transport": {
+    "type": "https",
+    "endpoint": "https://burmister.com/api/mcp"
+  },
+  "capabilities": {
+    "tools": false,
+    "resources": true,
+    "prompts": false
+  },
+  "resources": [
+    {
+      "name": "Text resume",
+      "uri": "https://burmister.com/resume.txt",
+      "mimeType": "text/plain"
+    },
+    {
+      "name": "Agent guidance",
+      "uri": "https://burmister.com/llms.txt",
+      "mimeType": "text/plain"
+    }
+  ],
+  "metadata": {
+    "status": "discovery-only",
+    "note": "A full MCP transport is not currently enabled. Use WebMCP on the homepage or the public text resources for agent access."
+  }
+}

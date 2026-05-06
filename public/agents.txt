@@ -1,0 +1,24 @@
+# burmister.com agent profile
+
+site: https://burmister.com
+owner: Adam Burmister
+last_updated: 2026-05-06
+
+## Purpose
+
+This file helps AI agents, crawlers and automated research tools understand the
+site without executing the terminal UI.
+
+## Recommended resources
+
+- Start here for agent guidance: https://burmister.com/llms.txt
+- Read Adam's text resume: https://burmister.com/resume.txt
+- Download Adam's resume PDF: https://burmister.com/cv.pdf
+- Read build notes and credits: https://burmister.com/colophon.txt
+- Discover APIs: https://burmister.com/.well-known/api-catalog
+
+## Site summary
+
+Adam Burmister is a senior frontend engineer in Melbourne, Australia. He
+focuses on React, TypeScript, design systems, SaaS UX, polished web products,
+practical full-stack delivery and agentic coding workflows.

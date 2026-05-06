@@ -9,7 +9,8 @@ const MENU_ANSI_URL = "/ansi/menu.ans";
 const ABOUT_ANSI_URL = "/ansi/about.ans";
 const DOORS_ANSI_URL = "/ansi/doors.ans";
 const RESUME_PDF_URL = "/cv.pdf";
-const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
+const RESUME_PDF_FILENAME =
+  "Adam Burmister - Senior Frontend Engineer - Resume.pdf";
 const GUESTBOOK_API_URL = "/api/guestbook";
 const MAX_GUESTBOOK_MESSAGE_LENGTH = 160;
 const DIALUP_SKIP_TICK_MS = 50;
@@ -41,7 +42,7 @@ const DIALER_STEPS: DialerStep[] = [
   { text: "OK", delayMs: 100 },
   { text: "AT&F1 E0 V1 S0=0", delayMs: 100 },
   { text: "OK", delayMs: 100 },
-  { text: "ATDT 03-5555-0198", delayMs: 100 },
+  { text: "ATDT 03-5555-1982", delayMs: 100 },
   { text: "DIALING", delayMs: 1000 },
   { text: "RINGBACK", delayMs: 120 },
   { text: "REMOTE ANSWER", delayMs: 500 },

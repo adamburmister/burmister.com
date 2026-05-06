@@ -1,18 +1,22 @@
 
-┏━╸╻ ╻┏━┓┏━┓╻┏━╸╻ ╻╻  ╻ ╻┏┳┓   ╻ ╻╻╺┳╸┏━┓┏━╸
-┃  ┃ ┃┣┳┛┣┳┛┃┃  ┃ ┃┃  ┃ ┃┃┃┃   ┃┏┛┃ ┃ ┣━┫┣╸ 
-┗━╸┗━┛╹┗╸╹┗╸╹┗━╸┗━┛┗━╸┗━┛╹ ╹   ┗┛ ╹ ╹ ╹ ╹┗━╸
+   ___ _   _ ____  ____  ___ ____ _   _ _     _   _ __  __   __     ___ _____  _    _____
+  / __| | | |  _ \|  _ \|_ _/ ___| | | | |   | | | |  \/  |  \ \   / / |_   _|/ \  | ____|
+ | (__| |_| | |_) | |_) || |\___ \ |_| | |   | |_| | |\/| |   \ \ / /| | | | / _ \ |  _|
+  \___|\___/|____/|____/|___|___/\___/|_|    \___/|_|  |_|    \_V_/ |_| |_|/_/ \_\|_____|
 
 +------------------------------------------------+
 | Download a PDF at https://burmister.com/cv.pdf |
 +------------------------------------------------+
 
 ADAM BURMISTER
-Senior Software Engineer / Web Product Lead
+Senior Product Frontend Engineer
+React / TypeScript / Design Systems / SaaS UX
+Ex-Stripe / Ex-Xero / Ex-Pinterest / Melbourne, full work rights
 
 I help businesses, big and small, build surprisingly great user experiences.
 
 Melbourne, Australia
++61 (0) 494 653 981
 adam@burmister.com
 https://burmister.com
 
@@ -78,45 +82,84 @@ AI / Modern Tooling:
   LLM application development, prompt engineering, agentic coding workflows,
   AI-assisted product development
 
+HIGHLIGHTS
+----------
+High-scale SaaS product engineering
+  Shipped major user-facing surfaces in Stripe Billing using React,
+  TypeScript and Ruby services, contributing to a complex recurring-revenue
+  product used by businesses globally.
+
+Developer-facing frontend SDKs
+  Contributed APAC, South-East Asian and LATAM payment methods to Stripe
+  Elements, Stripe's public React SDK used by hundreds of thousands of
+  developers.
+
+Growth and experimentation
+  Built advertiser-acquisition product features at Pinterest on a React/Redux
+  platform, partnering with Product and Data Science on A/B tests and
+  experiment readouts.
+
+Design systems and frontend platforms
+  Built Databento's first React/Radix/Tailwind component library, adopted
+  across product and marketing surfaces and used as the foundation for new
+  frontend work.
+
+Local fintech/accounting domain depth
+  Built payroll and accounting product surfaces at Xero across both
+  founding-era New Zealand and later US expansion roles, with experience in
+  regulated, high-stakes financial workflows at both Xero and Stripe.
+
 EXPERIENCE
 ----------
-Career Break / April 2024 - Present
+Relocation to Melbourne and Independent Product Work / April 2024 - Present
 Family commitments - Melbourne, Australia
 
+  - Relocated to Melbourne with full Australian work rights; now seeking a
+    long-term senior frontend/product engineering IC role in a high-quality
+    local product team.
   - Supporting my young family while continuing hands-on implementation of
-    cloud infrastructure, modern web platforms and practical AI/LLM usage.
-  - Active personal projects exploring agentic coding workflows, edge runtimes
-    and product prototyping with LLMs.
+    cloud infrastructure, modern web platforms and frameworks including Astro,
+    Next, TanStack Start and Hono, and practical application of AI/LLM to web
+    development tools.
+  - Active personal projects exploring agentic coding workflows, edge
+    runtimes and product prototyping with LLMs.
   - Building personal finance software with AI reconciliation features on
     Cloudflare's stack.
 
 Databento / Feb 2023 - April 2024
-Senior Software Engineer - Wall Street market-data provider - Remote
+Senior Frontend Engineer - Wall Street market-data provider - Remote
 
   - Designed and built the company's first React/Radix/Tailwind component
-    library, adopted across product and marketing surfaces.
-  - Owned technical direction for the front-end stack, including the migration
-    from Next.js to Astro for the marketing site.
-  - Improved Core Web Vitals and reduced maintenance cost for non-engineers.
+    library, adopted across product and marketing surfaces and now the
+    foundation for all new front-end work.
+  - Owned technical direction for the front-end stack, including the decision
+    and migration from Next.js to Astro for the marketing site, materially
+    improving Core Web Vitals and lowering ongoing maintenance cost for
+    non-engineers.
   - Partnered directly with founders and product on roadmap, feature scope and
-    customer feedback.
+    customer feedback; acted as the senior front-end voice in technical and
+    product decisions.
 
-  Stack: React, TypeScript, Astro, Radix UI, Tailwind, Node.js, design systems
+  Stack: React, TypeScript, Astro, Radix UI, Tailwind, Node.js, design systems,
+  technical direction
 
 Stripe / Oct 2017 - Feb 2023
-Software Engineer / Billing Solutions Architect - Remote, US/APAC
+Software Engineer / Billing Solutions Architect - Recurring-revenue product
+Remote, US/APAC
 
   - Shipped major user-facing surfaces in Stripe Billing, Stripe's
-    recurring-revenue product.
-  - Worked across React/TypeScript front ends and Ruby back-end services.
+    recurring-revenue product, working across React/TypeScript front ends and
+    Ruby back-end services.
   - Contributed APAC, South-East Asian and LATAM payment methods to Stripe
     Elements, Stripe's public React SDK used by hundreds of thousands of
     developers.
-  - Served as a Solutions Architect for about 12 months, partnering with Sales,
-    Product and customers to scope and prototype Billing implementations.
-  - Fed real-world product gaps back into the Billing engineering organisation.
+  - Stepped into a Solutions Architect role for about 12 months: a product-
+    and customer-facing rotation partnering with Sales, Product and prospective
+    customers to scope and prototype Billing implementations, unblock complex
+    integrations and feed real-world product gaps back to the Billing
+    engineering organisation.
   - Mentored junior and mid-level engineers, authored design docs and
-    contributed to CI, testing and architecture decisions.
+    contributed to platform-wide testing, CI and architecture decisions.
 
   Stack: React, TypeScript, Ruby, Node.js, CI/CD, end-to-end testing,
   system design, high scale, customer-facing work
@@ -124,24 +167,26 @@ Software Engineer / Billing Solutions Architect - Remote, US/APAC
 Pinterest / Nov 2015 - Sept 2017
 Software Engineer - Advertiser Growth - San Francisco / Remote
 
-  - Delivered advertiser-acquisition features on a freshly migrated React/Redux
-    platform serving advertisers globally.
-  - Worked across React/Redux UI, Node.js services and Python data pipelines.
-  - Partnered with Growth PM and Data Science on hypothesis design, A/B test
-    setup and post-experiment readouts.
+  - Delivered advertiser-acquisition product features on a freshly migrated
+    React/Redux platform serving advertisers globally.
+  - Worked across React/Redux UI, Node.js services and Python data pipelines
+    for growth experimentation.
+  - Partnered closely with the Growth PM and Data Science team on hypothesis
+    design, A/B test setup and post-experiment readouts.
 
   Stack: React, Redux, Node.js, Python, big-data pipelines, growth,
   A/B testing, PM partnership
 
 ServisHero / 2015 - 2017
-Co-founder / Head of UX and Engineering - South-East Asia
+Co-founder / Head of UX and Engineering
+Venture-backed home-services marketplace - South-East Asia
 
   - Co-founded a mobile-first home-services marketplace operating across
     Malaysia, Singapore and Thailand.
   - Raised institutional venture funding from regional investors.
-  - Owned product, UX and front-end engineering end-to-end.
-  - Set product roadmap, ran customer interviews, hired and managed designers
-    and engineers, and shipped consumer apps and provider platform.
+  - Owned product, UX and front-end engineering end-to-end: set the product
+    roadmap, ran customer interviews, hired and managed designers and
+    engineers, and shipped the consumer apps and service-provider platform.
   - First-hand founder/PM/EM experience: prioritisation, hiring, performance,
     customer development and shipping under hard constraints.
 
@@ -149,10 +194,10 @@ Co-founder / Head of UX and Engineering - South-East Asia
   product leadership, hiring, roadmap
 
 Xero / Nov 2013 - Oct 2015
-Senior Frontend Engineer - US Payroll - San Francisco
+Senior Frontend Engineer - US Payroll, post-IPO - San Francisco
 
-  - Built front-end payroll-management surfaces during Xero's US expansion.
-  - Integrated with C#/.NET back-end services.
+  - Built front-end payroll-management surfaces during Xero's US expansion,
+    integrating with C#/.NET back-end services.
   - Owned client-side architecture, build tooling and front-end performance for
     a regulated, high-stakes product.
 
@@ -168,7 +213,7 @@ Startup Founder / CEO / Frontend Engineering - London
     communications.
   - Contributed to the Erlang back end.
 
-  Stack: Founder, leadership, fundraising, real-time systems, telecoms,
+  Stack: founder, leadership, fundraising, real-time systems, telecoms,
   WebSockets
 
 BBC Worldwide / 2008 - 2010
