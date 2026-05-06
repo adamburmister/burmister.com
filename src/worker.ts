@@ -28,17 +28,34 @@ function estimateMarkdownTokens(markdown: string): string {
 
 function withDiscoveryHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
-  headers.append("vary", "accept");
+  headers.set("vary", appendHeaderValue(headers.get("vary"), "accept"));
 
-  for (const link of discoveryLinks) {
-    headers.append("link", link);
-  }
+  headers.set("link", discoveryLinks.join(", "));
 
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
     headers,
   });
+}
+
+function appendHeaderValue(
+  currentValue: string | null,
+  nextValue: string,
+): string {
+  if (!currentValue) {
+    return nextValue;
+  }
+
+  const values = currentValue
+    .split(",")
+    .map((value) => value.trim().toLowerCase());
+
+  if (values.includes(nextValue.toLowerCase())) {
+    return currentValue;
+  }
+
+  return `${currentValue}, ${nextValue}`;
 }
 
 export default {
@@ -48,7 +65,7 @@ export default {
     ctx: AstroExecutionContext,
   ) {
     const url = new URL(request.url);
-    const isHomepage = url.pathname === "/";
+    const isHomepage = url.pathname === "/" || url.pathname === "/index.html";
 
     if (isHomepage && wantsMarkdown(request)) {
       const headers = new Headers({
@@ -58,9 +75,7 @@ export default {
         "x-markdown-tokens": estimateMarkdownTokens(homepageMarkdown),
       });
 
-      for (const link of discoveryLinks) {
-        headers.append("link", link);
-      }
+      headers.set("link", discoveryLinks.join(", "));
 
       return new Response(homepageMarkdown, {
         headers,

@@ -103,6 +103,9 @@ export const discoveryLinks = [
   `<${resumeTextPath}>; rel="alternate"; type="text/plain"; title="Text resume"`,
   `<${colophonPath}>; rel="alternate"; type="text/plain"; title="Colophon"`,
   `</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"`,
+  `</.well-known/openapi.json>; rel="service-desc"; type="application/vnd.oai.openapi+json"; title="OpenAPI description"`,
+  `</.well-known/api-docs.md>; rel="service-doc"; type="text/markdown"; title="API documentation"`,
+  `</.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json"; title="OAuth protected resource metadata"`,
   `</.well-known/agent-skills/index.json>; rel="service-desc"; type="application/json"; title="Agent skills index"`,
   `</.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP server card"`,
 ];

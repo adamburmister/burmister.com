@@ -6,16 +6,21 @@ export const GET: APIRoute = () => {
   return Response.json(
     {
       resource: origin,
-      authorization_servers: [],
-      scopes_supported: [],
-      bearer_methods_supported: [],
+      resource_name: "burmister.com public API",
+      authorization_servers: [
+        `${origin}/.well-known/oauth-authorization-server`,
+      ],
+      scopes_supported: ["guestbook:read", "guestbook:write"],
+      bearer_methods_supported: ["header"],
       resource_documentation: `${origin}/.well-known/api-docs.md`,
+      resource_policy_uri: `${origin}/llms.txt`,
       metadata_note:
-        "No protected resources are currently exposed. The guestbook API is public and does not require OAuth.",
+        "The current public guestbook API does not require OAuth tokens. This metadata is published for agent discovery and future protected API compatibility.",
     },
     {
       headers: {
         "cache-control": "public, max-age=3600",
+        "content-type": "application/json; charset=utf-8",
       },
     },
   );
