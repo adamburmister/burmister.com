@@ -33,8 +33,28 @@ It exists for the same reason good old bulletin boards did:
 to make software feel like a place.
 
 [38;5;244mSysOp[0m : Adam Burmister
-[38;5;244mStack[0m : TypeScript, Astro, xterm.js, WebGL CRT rendering
-[38;5;244mFiles[0m : resume, projects, experiments, door games
+[38;5;244mStack[0m : TypeScript, Astro, xterm.js, WebGL CRT rendering, Cloudflare, Durable Objects
+[38;5;244mFiles[0m : cv/resume, experiments, door games
+
+[38;5;244m[Experience][0m
+[38;5;51mDatabento[0m   Senior Software Engineer            [38;5;244m 2023–24 [0m
+[38;5;51mStripe[0m      SWE · Solutions Architect           [38;5;244m 2017–23 [0m
+[38;5;51mPinterest[0m   Software Engineer                   [38;5;244m 2015–17 [0m
+[38;5;51mServisHero[0m  Co-founder · Design, Eng            [38;5;244m 2015–17 [0m
+[38;5;51mXero[0m        Senior Frontend Engineer            [38;5;244m 2013–15 [0m
+[38;5;51mMojolly[0m     Founder · CEO                       [38;5;244m 2010–13 [0m
+[38;5;51mBBC[0m         Worldwide, Lead Developer, bbc.com  [38;5;244m 2008–10 [0m
+
+[38;5;244m[Skills][0m
+[38;5;51mLanguages[0m   TypeScript, JavaScript, Ruby, Python, PHP, C#/.NET, SQL
+[38;5;51mFrontend[0m    React, Angular, Next.js, Astro, CSS3, Tailwind, Shadcn/Radix UI, 
+            component/design systems, web accessibility, +many more
+[38;5;51mBackend[0m     Node.js, Ruby on Rails, .NET, PHP, REST, GraphQL, 
+            event-driven systems, microservices
+[38;5;51mCloud[0m       Cloudflare, AWS, GCP, Docker, CI/CD, observability
+[38;5;51mPractice[0m    System design, unit/e2e testing, A/B experimentation, 
+            technical direction, RFC authoring, mentoring
+[38;5;51mA.I.[0m        LLM application development, agentic workflows, prompt engineering.
 
 [38;5;250mThanks for calling. Leave a note in the guestbook if the line holds.[0m
 
