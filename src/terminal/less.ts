@@ -94,7 +94,7 @@ export async function pageText(
   };
 
   ctx.terminal.hideCursor?.();
-  ctx.terminal.setKeyHandler(keyHandler);
+  ctx.terminal.setKeyHandler(keyHandler, { allowScroll: true });
 
   try {
     while (state.running) {
