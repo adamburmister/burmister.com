@@ -38,6 +38,10 @@ interface AudioControls {
 }
 
 export class XTermAdapter {
+  private static readonly RESUME_PDF_URL = "/cv.pdf";
+  private static readonly RESUME_PDF_FILENAME =
+    "Adam Burmister - Full Stack Engineer - Resume.pdf";
+  private static readonly MOBILE_CV_BUTTON_TEXT = "Download my CV as a PDF";
   private static readonly BIOS_PROGRESS_TOKEN = "%%%";
   private static readonly BIOS_PROGRESS_DURATION_MS = 100;
   private static readonly BIOS_PROGRESS_FRAME_MS = 20;
@@ -68,6 +72,11 @@ export class XTermAdapter {
   // Mouse selection state
   private isSelecting: boolean = false;
   private selectionStart: { col: number; row: number } | null = null;
+  private mobileCvButtonRange: {
+    row: number;
+    startCol: number;
+    endCol: number;
+  } | null = null;
 
   // Bound keyboard handler for games (so we can remove it later)
   private boundGameKeyboardHandler: ((event: KeyboardEvent) => void) | null =
@@ -312,6 +321,30 @@ export class XTermAdapter {
         { passive: false },
       );
 
+      // On mobile we render a "Sorry" message. The only thing the user
+      // can interact with is a button to download the CV. We need to detect
+      // clicks on that button and trigger the download.
+      container.addEventListener("pointerup", (event: PointerEvent) => {
+        if (!isMobileDevice() || !this.mobileCvButtonRange) {
+          return;
+        }
+
+        const gridPos = this.getGridPositionFromPointer(container, event);
+        const row = gridPos.row + this.xterm.buffer.active.viewportY;
+
+        if (
+          row === this.mobileCvButtonRange.row &&
+          gridPos.col >= this.mobileCvButtonRange.startCol &&
+          gridPos.col <= this.mobileCvButtonRange.endCol
+        ) {
+          event.preventDefault();
+          this.downloadFile(
+            XTermAdapter.RESUME_PDF_URL,
+            XTermAdapter.RESUME_PDF_FILENAME,
+          );
+        }
+      });
+
       // Enable right-click to paste from clipboard
       container.addEventListener("contextmenu", (event: MouseEvent) => {
         event.preventDefault();
@@ -384,11 +417,7 @@ export class XTermAdapter {
           return;
         }
 
-        // Get grid position from mouse coordinates (viewport-relative)
-        const rect = container.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        const gridPos = this.terminalText.pixelToGrid(x, y);
+        const gridPos = this.getGridPositionFromPointer(container, event);
 
         // Convert to absolute buffer position
         const viewportY = this.xterm.buffer.active.viewportY;
@@ -410,11 +439,7 @@ export class XTermAdapter {
           return;
         }
 
-        // Get grid position from mouse coordinates (viewport-relative)
-        const rect = container.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        const gridPos = this.terminalText.pixelToGrid(x, y);
+        const gridPos = this.getGridPositionFromPointer(container, event);
 
         // Convert to absolute buffer position
         const viewportY = this.xterm.buffer.active.viewportY;
@@ -431,11 +456,7 @@ export class XTermAdapter {
         }
 
         if (this.isSelecting && this.selectionStart) {
-          // Get final grid position (viewport-relative)
-          const rect = container.getBoundingClientRect();
-          const x = event.clientX - rect.left;
-          const y = event.clientY - rect.top;
-          const gridPos = this.terminalText.pixelToGrid(x, y);
+          const gridPos = this.getGridPositionFromPointer(container, event);
 
           // Convert to absolute buffer position
           const viewportY = this.xterm.buffer.active.viewportY;
@@ -480,22 +501,41 @@ export class XTermAdapter {
    */
   public showBootPrompt(): void {
     if (isMobileDevice()) {
-      const mobileMessage =
-        "Sorry, this site is\r\n" +
-        "designed for a retro\r\n" +
-        "terminal experience\r\n" +
-        "that requires a\r\n" +
-        "physical keyboard.\r\n" +
-        "\r\n" +
-        "Please visit using\r\n" +
-        "a desktop or laptop\r\n" +
-        "to enjoy the full\r\n" +
-        "experience.";
+      const messageLines = [
+        "Sorry, this site is",
+        "designed for a retro",
+        "terminal experience",
+        "that requires a",
+        "physical keyboard.",
+        "",
+        "Please visit using",
+        "a big screen",
+        "to enjoy the full",
+        "experience.",
+        "",
+      ];
+      const buttonText = ` ${XTermAdapter.MOBILE_CV_BUTTON_TEXT} `;
+      const buttonIndent = Math.max(
+        0,
+        Math.floor((this.xterm.cols - buttonText.length) / 2),
+      );
+      const buttonLine = `${" ".repeat(buttonIndent)}\x1b[1;7;32m${buttonText}\x1b[0m`;
+      const startRow =
+        this.xterm.buffer.active.baseY + this.xterm.buffer.active.cursorY;
+
+      this.mobileCvButtonRange = {
+        row: startRow + messageLines.length,
+        startCol: buttonIndent,
+        endCol: buttonIndent + buttonText.length - 1,
+      };
+
+      const mobileMessage = [...messageLines, buttonLine].join("\r\n");
       this.xterm.write(mobileMessage, () => {
         this.updateTerminalText();
       });
       return;
     }
+    this.mobileCvButtonRange = null;
     const bootMessage = "Press ENTER to initiate the BIOS boot sequence... ";
     this.xterm.write(bootMessage, () => {
       this.updateTerminalText();
@@ -722,15 +762,32 @@ export class XTermAdapter {
         }
       },
       downloadFile: (url: string, filename: string) => {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        link.style.display = "none";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        this.downloadFile(url, filename);
       },
     };
+  }
+
+  private getGridPositionFromPointer(
+    container: HTMLElement,
+    event: MouseEvent | PointerEvent,
+  ): { col: number; row: number } {
+    const rect = container.getBoundingClientRect();
+    const scaleX = rect.width > 0 ? container.offsetWidth / rect.width : 1;
+    const scaleY = rect.height > 0 ? container.offsetHeight / rect.height : 1;
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
+    return this.terminalText.pixelToGrid(x, y);
+  }
+
+  private downloadFile(url: string, filename: string): void {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   /**
