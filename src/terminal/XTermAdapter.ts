@@ -508,7 +508,7 @@ export class XTermAdapter {
   private async printBiosSequence(): Promise<void> {
     try {
       // Fetch the BIOS content
-      const response = await fetch("/assets/ansi/bios.ans");
+      const response = await fetch("/ansi/bios.ans");
       if (!response.ok) {
         console.warn("Could not load BIOS content:", response.statusText);
         return;

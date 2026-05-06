@@ -53,8 +53,9 @@ function collectTerminalFileMetadata() {
     .filter((filePath) => filePath.endsWith(".ts"))
     .filter((filePath) => !filePath.endsWith(".d.ts"));
   const contentAssetFiles = walkFiles(
-    join(rootDirectory, "public/assets/content"),
-  );
+    join(rootDirectory, "public/"),
+  ).filter((filePath) => filePath.endsWith(".txt"));
+
   const metadata = {};
 
   for (const absolutePath of [...terminalSourceFiles, ...contentAssetFiles]) {
@@ -106,7 +107,7 @@ export default defineConfig({
   },
   integrations: [sitemap()],
   redirects: {
-    "/colophon": "/assets/content/colophon.txt",
+    "/colophon": "/colophon.txt",
   },
   vite: {
     plugins: [terminalFileMetadataPlugin()],

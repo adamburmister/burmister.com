@@ -23,6 +23,6 @@ This site is a reworked personal portfolio based on Remo H. Jansen's
 cool-retro-term-webgl project:
 <https://github.com/remojansen/cool-retro-term-webgl/>
 
-See [colophon.txt](public/assets/content/colophon.txt) for more
+See [colophon.txt](public/colophon.txt) for more
 
 Licensed under GNU General Public License v.3.0. See [LICENSE](LICENSE) for details.

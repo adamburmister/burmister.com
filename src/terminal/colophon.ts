@@ -1,7 +1,7 @@
 import type { CommandContext } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
-const COLOPHON_TEXT_URL = "/assets/content/colophon.txt";
+const COLOPHON_TEXT_URL = "/colophon.txt";
 
 export async function colophonCommand(ctx: CommandContext): Promise<void> {
   try {
@@ -39,7 +39,7 @@ export const terminalModule = defineTerminalModule({
     },
     {
       path: "docs/colophon.txt",
-      statPath: "public/assets/content/colophon.txt",
+      statPath: "public/colophon.txt",
       permissions: "-rw-r--r--",
       assetUrl: COLOPHON_TEXT_URL,
       contentErrorMessage: "Could not load colophon file",

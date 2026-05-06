@@ -47,7 +47,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
     }
   };
 
-  audioLoader.load("/assets/audio/background.mp3", (loadedBuffer) => {
+  audioLoader.load("/audio/background.mp3", (loadedBuffer) => {
     bgBuffer = loadedBuffer;
     backgroundMusic.setBuffer(bgBuffer);
     backgroundMusic.setLoop(true);
@@ -65,7 +65,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
   let gameAudioLoaded = false;
   let gameBuffer: AudioBuffer | null = null;
 
-  audioLoader.load("/assets/audio/game.mp3", (loadedBuffer) => {
+  audioLoader.load("/audio/game.mp3", (loadedBuffer) => {
     gameBuffer = loadedBuffer;
     gameMusic.setBuffer(gameBuffer);
     gameMusic.setLoop(true);
@@ -81,7 +81,7 @@ function setupAudio(camera: THREE.Camera): AudioControls {
 
   const dialupLoadPromise = new Promise<void>((resolve) => {
     audioLoader.load(
-      "/assets/audio/dialup.mp3",
+      "/audio/dialup.mp3",
       (loadedBuffer) => {
         dialupBuffer = loadedBuffer;
         dialupAudio.setBuffer(dialupBuffer);

@@ -2,7 +2,7 @@ import { pageText } from "./less";
 import type { CommandContext } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
-const RESUME_TEXT_URL = "/assets/content/resume.txt";
+const RESUME_TEXT_URL = "/resume.txt";
 
 export async function cvCommand(ctx: CommandContext): Promise<void> {
   try {
@@ -38,7 +38,7 @@ export const terminalModule = defineTerminalModule({
     },
     {
       path: "docs/resume.txt",
-      statPath: "public/assets/content/resume.txt",
+      statPath: "public/resume.txt",
       permissions: "-rw-r--r--",
       assetUrl: RESUME_TEXT_URL,
       contentErrorMessage: "Could not load resume file",

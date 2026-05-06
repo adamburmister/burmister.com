@@ -4,10 +4,10 @@ import { sleep } from "./shellTypes";
 import { defineTerminalModule } from "./terminalModule";
 
 const ANSI_LINE_DELAY_MS = 45;
-const WELCOME_ANSI_URL = "/assets/ansi/welcome.ans";
-const MENU_ANSI_URL = "/assets/ansi/menu.ans";
-const ABOUT_ANSI_URL = "/assets/ansi/about.ans";
-const DOORS_ANSI_URL = "/assets/ansi/doors.ans";
+const WELCOME_ANSI_URL = "/ansi/welcome.ans";
+const MENU_ANSI_URL = "/ansi/menu.ans";
+const ABOUT_ANSI_URL = "/ansi/about.ans";
+const DOORS_ANSI_URL = "/ansi/doors.ans";
 const RESUME_PDF_URL = "/cv.pdf";
 const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
 const GUESTBOOK_API_URL = "/api/guestbook";

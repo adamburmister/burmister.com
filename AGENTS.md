@@ -4,7 +4,7 @@
 
 This is Adam Burmister's retro terminal CV/portfolio site. It is a browser-based terminal experience built with Astro, TypeScript, Three.js, xterm.js, and `cool-retro-term-renderer`.
 
-The app is mostly static: portfolio content, terminal text, ANSI screens, audio, and downloadable files live under `public/assets`. The BBS guestbook currently persists in browser `localStorage`; there is no shared backend for it yet.
+The app is mostly static: portfolio content, terminal text, ANSI screens, audio, and downloadable files live under `public/`. The BBS guestbook currently persists in browser `localStorage`; there is no shared backend for it yet.
 
 ## Architecture
 
@@ -19,17 +19,17 @@ The app is mostly static: portfolio content, terminal text, ANSI screens, audio,
 
 User input flows through `XTermAdapter`, into `ShellEmulator.runCommand`, then through a command handler using `TerminalIO`. Writes go to xterm first, and `XTermAdapter.updateTerminalText()` mirrors xterm's visible buffer into the CRT renderer.
 
-The BIOS sequence is loaded from `public/assets/content/bios.txt`. `@@@` separates output batches, and `%%%` markers are rendered as animated ANSI block progress bars. After BIOS completes, the adapter prints the prompt, types `dialer` character-by-character, and executes it without adding it to user command history.
+The BIOS sequence is loaded from `public/bios.txt`. `@@@` separates output batches, and `%%%` markers are rendered as animated ANSI block progress bars. After BIOS completes, the adapter prints the prompt, types `dialer` character-by-character, and executes it without adding it to user command history.
 
 `runCommand(command, terminal, { suppressPrompt?: boolean })` supports suppressing the shell prompt. The BBS uses this when launching door games so games can return to the BBS screen instead of dropping a shell prompt in the middle of the session.
 
 ## Static Content
 
-- `public/assets/ansi/bios.ans` drives the BIOS animation.
-- `public/assets/audio/background.mp3`, `game.mp3`, `chill-game.mp3`, and `dialup.mp3` are used by the terminal experience.
+- `public/ansi/bios.ans` drives the BIOS animation.
+- `public/audio/background.mp3`, `game.mp3`, `chill-game.mp3`, and `dialup.mp3` are used by the terminal experience.
 - `public/cv.pdf` is the downloadable resume served by the BBS CV option. It should save as "Adam Burmister - Full Stack Engineer - Resume.pdf"
 
-Prefer moving terminal-visible prose into `public/assets/content` when it is content rather than behavior. Keep structured metadata in `src/data/portfolio.ts` when it is used for layouts, SEO, JSON-LD, or typed data.
+Prefer moving terminal-visible prose into `public/` when it is content rather than behavior. Keep structured metadata in `src/data/portfolio.ts` when it is used for layouts, SEO, JSON-LD, or typed data.
 
 ## BBS Behavior
 
