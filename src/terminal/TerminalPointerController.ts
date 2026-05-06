@@ -18,6 +18,7 @@ interface TerminalPointerControllerOptions {
   canSelect: () => boolean;
   appendInput: (text: string) => void;
   downloadFile: (url: string, filename: string) => void;
+  navigateTo: (url: string) => void;
   updateTerminalText: () => void;
 }
 
@@ -34,6 +35,7 @@ export class TerminalPointerController {
   private readonly canSelect: () => boolean;
   private readonly appendInput: (text: string) => void;
   private readonly downloadFile: (url: string, filename: string) => void;
+  private readonly navigateTo: (url: string) => void;
   private readonly updateTerminalText: () => void;
   private isSelecting = false;
   private selectionStart: GridPosition | null = null;
@@ -50,6 +52,7 @@ export class TerminalPointerController {
     this.canSelect = options.canSelect;
     this.appendInput = options.appendInput;
     this.downloadFile = options.downloadFile;
+    this.navigateTo = options.navigateTo;
     this.updateTerminalText = options.updateTerminalText;
 
     this.attach();
@@ -105,8 +108,8 @@ export class TerminalPointerController {
       )
     ) {
       event.preventDefault();
-      const downloadTarget = this.mobileFallback.getDownloadTarget();
-      this.downloadFile(downloadTarget.url, downloadTarget.filename);
+      const navigationTarget = this.mobileFallback.getNavigationTarget();
+      this.navigateTo(navigationTarget.url);
     }
   };
 

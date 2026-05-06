@@ -11,13 +11,11 @@ interface GridPosition {
   row: number;
 }
 
-export interface MobileDownloadTarget {
+export interface MobileNavigationTarget {
   url: string;
-  filename: string;
 }
 
 const RESUME_PDF_URL = "/cv.pdf";
-const RESUME_PDF_FILENAME = "Adam Burmister - Full Stack Engineer - Resume.pdf";
 const CV_BUTTON_TEXT = "⇓ Download my CV as a PDF";
 const MESSAGE_LINES = [
   "Sorry, this site is",
@@ -75,10 +73,9 @@ export class MobileTerminalFallback {
     );
   }
 
-  public getDownloadTarget(): MobileDownloadTarget {
+  public getNavigationTarget(): MobileNavigationTarget {
     return {
       url: RESUME_PDF_URL,
-      filename: RESUME_PDF_FILENAME,
     };
   }
 }

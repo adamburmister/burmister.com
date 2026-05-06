@@ -329,6 +329,9 @@ export class XTermAdapter {
         downloadFile: (url: string, filename: string) => {
           this.downloadFile(url, filename);
         },
+        navigateTo: (url: string) => {
+          window.location.href = url;
+        },
         updateTerminalText: () => this.updateTerminalText(),
       });
     }
