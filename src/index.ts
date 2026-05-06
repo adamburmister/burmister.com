@@ -220,6 +220,7 @@ async function runScene(): Promise<void> {
   terminalText.setBloom(0.2);
   terminalText.setCursorBlinking(true);
   terminalText.setBurnIn(0.2);
+  terminalText.setStaticNoise(0.02);
   terminalText.mesh.position.z = 0;
   scene.add(terminalText.mesh);
 

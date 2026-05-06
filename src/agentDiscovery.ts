@@ -30,7 +30,39 @@ export const sameAs = [
   "https://www.linkedin.com/in/adamburmister/",
 ];
 
-export const homepageMarkdown = `# Adam Burmister
+export const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: personName,
+  jobTitle: roleTitle,
+  url: siteUrl,
+  image: `${siteUrl}/adam-burmister.png`,
+  description: siteDescription,
+  sameAs,
+  knowsAbout: skills,
+  subjectOf: [
+    {
+      "@type": "CreativeWork",
+      name: "Resume PDF",
+      url: `${siteUrl}${resumePdfPath}`,
+      encodingFormat: "application/pdf",
+    },
+    {
+      "@type": "CreativeWork",
+      name: "Text resume",
+      url: `${siteUrl}${resumeTextPath}`,
+      encodingFormat: "text/plain",
+    },
+  ],
+};
+
+export const homepageMarkdown = `---
+title: Adam Burmister - Senior Frontend Engineer
+description: ${siteDescription}
+image: ${siteUrl}/adam-burmister.png
+---
+
+# Adam Burmister
 
 ${siteDescription}
 
@@ -59,33 +91,11 @@ ${skills.map((skill) => `- ${skill}`).join("\n")}
 ## Agent Notes
 
 The visual homepage is a retro terminal/WebGL experience. Agents should prefer the text resources above for extraction, citation, and summarisation.
-`;
 
-export const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: personName,
-  jobTitle: roleTitle,
-  url: siteUrl,
-  image: `${siteUrl}/adam-burmister.png`,
-  description: siteDescription,
-  sameAs,
-  knowsAbout: skills,
-  subjectOf: [
-    {
-      "@type": "CreativeWork",
-      name: "Resume PDF",
-      url: `${siteUrl}${resumePdfPath}`,
-      encodingFormat: "application/pdf",
-    },
-    {
-      "@type": "CreativeWork",
-      name: "Text resume",
-      url: `${siteUrl}${resumeTextPath}`,
-      encodingFormat: "text/plain",
-    },
-  ],
-};
+\`\`\`json
+${JSON.stringify(personJsonLd, null, 2)}
+\`\`\`
+`;
 
 export const discoveryLinks = [
   `<${agentGuidancePath}>; rel="alternate"; type="text/plain"; title="LLM guidance"`,

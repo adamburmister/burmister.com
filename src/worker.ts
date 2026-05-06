@@ -12,14 +12,23 @@ function wantsMarkdown(request: Request): boolean {
   return accept
     .split(",")
     .map((entry) => entry.trim().toLowerCase())
-    .some(
-      (entry) =>
-        entry === "text/markdown" || entry.startsWith("text/markdown;"),
-    );
+    .some((entry) => {
+      if (!(entry === "text/markdown" || entry.startsWith("text/markdown;"))) {
+        return false;
+      }
+
+      const quality = entry.match(/;\s*q=([0-9.]+)/)?.[1];
+      return quality === undefined || Number(quality) > 0;
+    });
+}
+
+function estimateMarkdownTokens(markdown: string): string {
+  return String(markdown.trim().split(/\s+/).filter(Boolean).length);
 }
 
 function withDiscoveryHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
+  headers.append("vary", "accept");
 
   for (const link of discoveryLinks) {
     headers.append("link", link);
@@ -44,7 +53,9 @@ export default {
     if (isHomepage && wantsMarkdown(request)) {
       const headers = new Headers({
         "content-type": "text/markdown; charset=utf-8",
-        "x-markdown-tokens": String(homepageMarkdown.split(/\s+/).length),
+        "content-signal": "ai-train=no, search=yes, ai-input=yes",
+        vary: "accept",
+        "x-markdown-tokens": estimateMarkdownTokens(homepageMarkdown),
       });
 
       for (const link of discoveryLinks) {
