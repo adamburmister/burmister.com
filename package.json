@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "build": "astro build",
+    "check": "tsc --noEmit && biome check src tests playwright.config.ts astro.config.js",
     "dev": "astro dev",
     "preview": "astro preview",
     "deploy": "wrangler deploy",
     "lint-and-format": "npx @biomejs/biome check --write --unsafe",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "playwright test",
+    "test:e2e": "playwright test",
     "generate-types": "wrangler types",
     "cf-preview": "astro build && wrangler dev",
     "cf-deploy": "astro build && wrangler deploy"
@@ -33,10 +35,13 @@
     "@astrojs/cloudflare": "^13.3.1",
     "@astrojs/sitemap": "^3.7.2",
     "@biomejs/biome": "^2.4.14",
+    "@playwright/test": "^1.59.1",
+    "@types/pngjs": "^6.0.5",
     "@types/three": "^0.184.0",
     "astro": "^6.2.2",
     "node-addon-api": "^8.7.0",
     "node-gyp": "^12.3.0",
+    "pngjs": "^7.0.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.88.0"
   },
