@@ -8,6 +8,7 @@ const WELCOME_ANSI_URL = "/ansi/welcome.ans";
 const MENU_ANSI_URL = "/ansi/menu.ans";
 const ABOUT_ANSI_URL = "/ansi/about.ans";
 const DOORS_ANSI_URL = "/ansi/doors.ans";
+const LOGOFF_ANSI_URL = "/ansi/logoff.ans";
 const RESUME_PDF_URL = "/cv.pdf";
 const RESUME_PDF_FILENAME =
   "Adam Burmister - Senior Frontend Engineer - Resume.pdf";
@@ -182,6 +183,8 @@ async function runBbsSession(ctx: CommandContext): Promise<void> {
     }
   }
 
+  ctx.terminal.writeln("");
+  await renderAnsiFile(ctx, LOGOFF_ANSI_URL);
   ctx.terminal.writeln("");
   ctx.terminal.writeln("NO CARRIER");
   ctx.terminal.writeln("Disconnected from BURMISTER.COM BBS.");

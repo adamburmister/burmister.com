@@ -1,0 +1,7 @@
+[38;5;201m╔══════════════════════════════════════════════════════════════════════════════╗[0m
+[38;5;201m║                         INLINE IMAGE EXAMPLE                                 ║[0m
+[38;5;201m╚══════════════════════════════════════════════════════════════════════════════╝[0m
+
+<img src="../adam-burmister.png" width="24" alt="Adam Burmister portrait">
+
+[38;5;45m  Build with: npm run build-terminal-assets[0m

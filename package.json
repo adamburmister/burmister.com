@@ -4,6 +4,12 @@
   "description": "Adam Burmister's retro terminal CV and portfolio website",
   "type": "module",
   "scripts": {
+    "build-terminal-assets": "node scripts/build-terminal-assets.mjs",
+    "pixelate-image": "node scripts/pixelate-image.mjs",
+    "test:unit": "node --test tests/scripts/terminal-assets.test.mjs",
+    "predev": "npm run build-terminal-assets",
+    "prebuild": "npm run build-terminal-assets",
+    "prepreview": "npm run build-terminal-assets",
     "build": "astro build",
     "check": "tsc --noEmit && biome check src tests playwright.config.ts astro.config.js",
     "dev": "astro dev",
