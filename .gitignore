@@ -5,6 +5,7 @@ dist/
 dist-**/
 temp/
 *.tsbuildinfo
+public/ansi/*.generated.ans
 .DS_Store
 .vercel
 .netlify
