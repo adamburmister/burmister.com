@@ -3,7 +3,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
-import { defineConfig } from "astro/config";
+import { defineConfig,sessionDrivers } from "astro/config";
 
 const rootDirectory = fileURLToPath(new URL(".", import.meta.url));
 const terminalMetadataModuleId = "virtual:terminal-file-metadata";
@@ -102,10 +102,14 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  session: {
-    driver: "memory",
-  },
-  integrations: [sitemap()],
+  integrations: [sitemap(
+    {
+      customPages: [
+        'https://burmister.com/cv.pdf', 
+        'https://burmister.com/resume.txt'
+      ]
+    }
+  )],
   redirects: {
     "/colophon": "/colophon.txt",
     "/sitemap.xml": "/sitemap-index.xml",
