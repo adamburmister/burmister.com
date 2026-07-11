@@ -102,10 +102,14 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  session: {
-    driver: "memory",
-  },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      customPages: [
+        "https://burmister.com/cv.pdf",
+        "https://burmister.com/resume.txt",
+      ],
+    }),
+  ],
   redirects: {
     "/colophon": "/colophon.txt",
     "/sitemap.xml": "/sitemap-index.xml",

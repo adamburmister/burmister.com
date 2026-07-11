@@ -25,6 +25,11 @@ const discoveredTerminalModules = import.meta.glob<TerminalModuleExport>(
     "!./shellTypes.ts",
     "!./terminalModule.ts",
     "!./virtualFileSystem.ts",
+    /* BiosBootSequence imports ShellEmulator, which imports this module,
+       so eagerly globbing it would create a circular dependency that leaves
+       its module namespace undefined under the current bundler. It is not a
+       terminal module and is imported directly by XTermAdapter. */
+    "!./BiosBootSequence.ts",
   ],
   { eager: true },
 );
