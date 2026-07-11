@@ -105,10 +105,10 @@ export default defineConfig({
   integrations: [
     sitemap({
       customPages: [
-        'https://burmister.com/cv.pdf', 
-        'https://burmister.com/resume.txt'
-      ]
-    })
+        "https://burmister.com/cv.pdf",
+        "https://burmister.com/resume.txt",
+      ],
+    }),
   ],
   redirects: {
     "/colophon": "/colophon.txt",
