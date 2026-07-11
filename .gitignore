@@ -23,6 +23,7 @@ package-lock.json
 .vscode-test/
 .claude
 .wrangler/
+.worktrees/
 
 # do not commit .env files or any files that end with `.env`
 *.env
